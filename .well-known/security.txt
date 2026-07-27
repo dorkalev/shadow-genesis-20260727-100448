@@ -1,0 +1,4 @@
+Contact: https://github.com/dorkalev/shadow-genesis-20260727-100448/security/advisories/new
+Expires: 2027-07-27T00:00:00Z
+Preferred-Languages: en
+Policy: report vulnerabilities privately via GitHub Security Advisories
