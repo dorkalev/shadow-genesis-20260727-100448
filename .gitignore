@@ -1,0 +1,7 @@
+.shadow/ci/target/
+.shadow/site/target/
+shadow/*.db
+provision/**/.terraform/
+provision/**/*.tfstate*
+provision/**/tfplan
+.shadow-evidence/
