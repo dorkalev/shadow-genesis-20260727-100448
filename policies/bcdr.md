@@ -1,0 +1,13 @@
+---
+owner: dorkalev
+version: 1.0
+approved_by: OPEN
+approved_at: OPEN
+review_by: 2027-07-27
+criteria: CC9.1, A1.2, A1.3, CC7.5
+---
+# Business Continuity & Disaster Recovery Policy
+
+> Draft authored by the shadow. Review and approve by merging; that merge is the approval record. Until approved, this credits as *implemented*, not *verified*.
+
+Customer data is protected by automated backups with point-in-time recovery on the primary datastore (cloud runtime). Recovery objectives: RPO ≤ 24h, RTO ≤ 8h for a total-loss scenario. Restore capability is proven by the quarterly automated restore test (`restore-test.yml`), with evidence filed under `evidence/restore-tests/`. Key-person and vendor-outage risks are in the risk register with mitigations.
