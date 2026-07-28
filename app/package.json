@@ -1,0 +1,20 @@
+{
+  "name": "measurements",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "tsc --outDir .test-build --rootDir . --module commonjs --target ES2022 --esModuleInterop --skipLibCheck src/pi.ts test/pi.test.ts && node --test .test-build/test/pi.test.js"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^7.10.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0"
+  }
+}
