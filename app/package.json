@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "tsc --outDir .test-build --rootDir . --module commonjs --target ES2022 --esModuleInterop --skipLibCheck src/pi.ts test/pi.test.ts && node --test .test-build/test/pi.test.js"
+    "test": "tsc --outDir .test-build --rootDir . --strict --module commonjs --target ES2022 --esModuleInterop --skipLibCheck src/*.ts test/*.ts && node --test .test-build/test/*.js"
   },
   "dependencies": {
     "@google-cloud/firestore": "^7.10.0",
