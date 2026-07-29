@@ -1,0 +1,1468 @@
+{
+  "archive_id": "pr-25-noticket-20260729",
+  "archive_version": "3.0",
+  "archived_at": "2026-07-29T07:28:59Z",
+  "bypass_merge": {
+    "bypassed": [],
+    "informational": [
+      "archive (none)"
+    ],
+    "is_bypass": false,
+    "passed": [],
+    "required_checks": [],
+    "required_checks_known": true
+  },
+  "check_runs": [
+    {
+      "app": {
+        "client_id": "Iv1.05c79e9ad1f6bdfa",
+        "created_at": "2018-07-30T09:30:17Z",
+        "description": "Automate your workflow from idea to production",
+        "events": [
+          "branch_protection_rule",
+          "check_run",
+          "check_suite",
+          "create",
+          "delete",
+          "deployment",
+          "deployment_status",
+          "discussion",
+          "discussion_comment",
+          "fork",
+          "gollum",
+          "issues",
+          "issue_comment",
+          "label",
+          "merge_group",
+          "milestone",
+          "page_build",
+          "public",
+          "pull_request",
+          "pull_request_review",
+          "pull_request_review_comment",
+          "push",
+          "registry_package",
+          "release",
+          "repository",
+          "repository_dispatch",
+          "status",
+          "watch",
+          "workflow_dispatch",
+          "workflow_run"
+        ],
+        "external_url": "https://help.github.com/en/actions",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 15368,
+        "name": "GitHub Actions",
+        "node_id": "MDM6QXBwMTUzNjg=",
+        "owner": {
+          "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+          "events_url": "https://api.github.com/users/github/events{/privacy}",
+          "followers_url": "https://api.github.com/users/github/followers",
+          "following_url": "https://api.github.com/users/github/following{/other_user}",
+          "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+          "gravatar_id": "",
+          "html_url": "https://github.com/github",
+          "id": 9919,
+          "login": "github",
+          "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+          "organizations_url": "https://api.github.com/users/github/orgs",
+          "received_events_url": "https://api.github.com/users/github/received_events",
+          "repos_url": "https://api.github.com/users/github/repos",
+          "site_admin": false,
+          "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+          "type": "Organization",
+          "url": "https://api.github.com/users/github",
+          "user_view_type": "public"
+        },
+        "permissions": {
+          "actions": "write",
+          "administration": "read",
+          "artifact_metadata": "write",
+          "attestations": "write",
+          "checks": "write",
+          "code_quality": "write",
+          "contents": "write",
+          "copilot_requests": "write",
+          "deployments": "write",
+          "discussions": "write",
+          "drives": "write",
+          "issues": "write",
+          "merge_queues": "write",
+          "metadata": "read",
+          "models": "read",
+          "packages": "write",
+          "pages": "write",
+          "pull_requests": "write",
+          "repository_hooks": "write",
+          "repository_projects": "write",
+          "security_events": "write",
+          "statuses": "write",
+          "vulnerability_alerts": "read"
+        },
+        "slug": "github-actions",
+        "updated_at": "2026-06-18T16:17:48Z"
+      },
+      "check_suite": {
+        "id": 82487865363
+      },
+      "completed_at": null,
+      "conclusion": null,
+      "details_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/actions/runs/30431781239/job/90510412409",
+      "external_id": "15232547-34aa-5fd2-82a9-c2788ee4777d",
+      "head_sha": "eec8914029ee64c4628faa061fa83fe821b8fdbc",
+      "html_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/actions/runs/30431781239/job/90510412409",
+      "id": 90510412409,
+      "name": "archive",
+      "node_id": "CR_kwDOTk1TRM8AAAAVEtdKeQ",
+      "output": {
+        "annotations_count": 0,
+        "annotations_url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/check-runs/90510412409/annotations",
+        "summary": null,
+        "text": null,
+        "title": null
+      },
+      "pull_requests": [],
+      "started_at": "2026-07-29T07:28:29Z",
+      "status": "in_progress",
+      "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/check-runs/90510412409"
+    },
+    {
+      "app": {
+        "client_id": "Iv1.05c79e9ad1f6bdfa",
+        "created_at": "2018-07-30T09:30:17Z",
+        "description": "Automate your workflow from idea to production",
+        "events": [
+          "branch_protection_rule",
+          "check_run",
+          "check_suite",
+          "create",
+          "delete",
+          "deployment",
+          "deployment_status",
+          "discussion",
+          "discussion_comment",
+          "fork",
+          "gollum",
+          "issues",
+          "issue_comment",
+          "label",
+          "merge_group",
+          "milestone",
+          "page_build",
+          "public",
+          "pull_request",
+          "pull_request_review",
+          "pull_request_review_comment",
+          "push",
+          "registry_package",
+          "release",
+          "repository",
+          "repository_dispatch",
+          "status",
+          "watch",
+          "workflow_dispatch",
+          "workflow_run"
+        ],
+        "external_url": "https://help.github.com/en/actions",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 15368,
+        "name": "GitHub Actions",
+        "node_id": "MDM6QXBwMTUzNjg=",
+        "owner": {
+          "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+          "events_url": "https://api.github.com/users/github/events{/privacy}",
+          "followers_url": "https://api.github.com/users/github/followers",
+          "following_url": "https://api.github.com/users/github/following{/other_user}",
+          "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+          "gravatar_id": "",
+          "html_url": "https://github.com/github",
+          "id": 9919,
+          "login": "github",
+          "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+          "organizations_url": "https://api.github.com/users/github/orgs",
+          "received_events_url": "https://api.github.com/users/github/received_events",
+          "repos_url": "https://api.github.com/users/github/repos",
+          "site_admin": false,
+          "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+          "type": "Organization",
+          "url": "https://api.github.com/users/github",
+          "user_view_type": "public"
+        },
+        "permissions": {
+          "actions": "write",
+          "administration": "read",
+          "artifact_metadata": "write",
+          "attestations": "write",
+          "checks": "write",
+          "code_quality": "write",
+          "contents": "write",
+          "copilot_requests": "write",
+          "deployments": "write",
+          "discussions": "write",
+          "drives": "write",
+          "issues": "write",
+          "merge_queues": "write",
+          "metadata": "read",
+          "models": "read",
+          "packages": "write",
+          "pages": "write",
+          "pull_requests": "write",
+          "repository_hooks": "write",
+          "repository_projects": "write",
+          "security_events": "write",
+          "statuses": "write",
+          "vulnerability_alerts": "read"
+        },
+        "slug": "github-actions",
+        "updated_at": "2026-06-18T16:17:48Z"
+      },
+      "check_suite": {
+        "id": 82486239183
+      },
+      "completed_at": "2026-07-29T07:19:25Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/actions/runs/30431196840/job/90508588871",
+      "external_id": "e7ff1406-1ee5-547e-9a28-0a6f8e9c3c93",
+      "head_sha": "eec8914029ee64c4628faa061fa83fe821b8fdbc",
+      "html_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/actions/runs/30431196840/job/90508588871",
+      "id": 90508588871,
+      "name": "compliance-audit",
+      "node_id": "CR_kwDOTk1TRM8AAAAVErt3Rw",
+      "output": {
+        "annotations_count": 1,
+        "annotations_url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/check-runs/90508588871/annotations",
+        "summary": null,
+        "text": null,
+        "title": null
+      },
+      "pull_requests": [],
+      "started_at": "2026-07-29T07:18:53Z",
+      "status": "completed",
+      "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/check-runs/90508588871"
+    },
+    {
+      "app": {
+        "client_id": "Iv1.05c79e9ad1f6bdfa",
+        "created_at": "2018-07-30T09:30:17Z",
+        "description": "Automate your workflow from idea to production",
+        "events": [
+          "branch_protection_rule",
+          "check_run",
+          "check_suite",
+          "create",
+          "delete",
+          "deployment",
+          "deployment_status",
+          "discussion",
+          "discussion_comment",
+          "fork",
+          "gollum",
+          "issues",
+          "issue_comment",
+          "label",
+          "merge_group",
+          "milestone",
+          "page_build",
+          "public",
+          "pull_request",
+          "pull_request_review",
+          "pull_request_review_comment",
+          "push",
+          "registry_package",
+          "release",
+          "repository",
+          "repository_dispatch",
+          "status",
+          "watch",
+          "workflow_dispatch",
+          "workflow_run"
+        ],
+        "external_url": "https://help.github.com/en/actions",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 15368,
+        "name": "GitHub Actions",
+        "node_id": "MDM6QXBwMTUzNjg=",
+        "owner": {
+          "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+          "events_url": "https://api.github.com/users/github/events{/privacy}",
+          "followers_url": "https://api.github.com/users/github/followers",
+          "following_url": "https://api.github.com/users/github/following{/other_user}",
+          "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+          "gravatar_id": "",
+          "html_url": "https://github.com/github",
+          "id": 9919,
+          "login": "github",
+          "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+          "organizations_url": "https://api.github.com/users/github/orgs",
+          "received_events_url": "https://api.github.com/users/github/received_events",
+          "repos_url": "https://api.github.com/users/github/repos",
+          "site_admin": false,
+          "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+          "type": "Organization",
+          "url": "https://api.github.com/users/github",
+          "user_view_type": "public"
+        },
+        "permissions": {
+          "actions": "write",
+          "administration": "read",
+          "artifact_metadata": "write",
+          "attestations": "write",
+          "checks": "write",
+          "code_quality": "write",
+          "contents": "write",
+          "copilot_requests": "write",
+          "deployments": "write",
+          "discussions": "write",
+          "drives": "write",
+          "issues": "write",
+          "merge_queues": "write",
+          "metadata": "read",
+          "models": "read",
+          "packages": "write",
+          "pages": "write",
+          "pull_requests": "write",
+          "repository_hooks": "write",
+          "repository_projects": "write",
+          "security_events": "write",
+          "statuses": "write",
+          "vulnerability_alerts": "read"
+        },
+        "slug": "github-actions",
+        "updated_at": "2026-06-18T16:17:48Z"
+      },
+      "check_suite": {
+        "id": 82486239183
+      },
+      "completed_at": "2026-07-29T07:19:23Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/actions/runs/30431196840/job/90508588821",
+      "external_id": "6799e7d7-63b6-5722-8c57-63c6bdaeda75",
+      "head_sha": "eec8914029ee64c4628faa061fa83fe821b8fdbc",
+      "html_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/actions/runs/30431196840/job/90508588821",
+      "id": 90508588821,
+      "name": "compliance-review-gate",
+      "node_id": "CR_kwDOTk1TRM8AAAAVErt3FQ",
+      "output": {
+        "annotations_count": 1,
+        "annotations_url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/check-runs/90508588821/annotations",
+        "summary": null,
+        "text": null,
+        "title": null
+      },
+      "pull_requests": [],
+      "started_at": "2026-07-29T07:18:53Z",
+      "status": "completed",
+      "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/check-runs/90508588821"
+    },
+    {
+      "app": {
+        "client_id": "Iv1.05c79e9ad1f6bdfa",
+        "created_at": "2018-07-30T09:30:17Z",
+        "description": "Automate your workflow from idea to production",
+        "events": [
+          "branch_protection_rule",
+          "check_run",
+          "check_suite",
+          "create",
+          "delete",
+          "deployment",
+          "deployment_status",
+          "discussion",
+          "discussion_comment",
+          "fork",
+          "gollum",
+          "issues",
+          "issue_comment",
+          "label",
+          "merge_group",
+          "milestone",
+          "page_build",
+          "public",
+          "pull_request",
+          "pull_request_review",
+          "pull_request_review_comment",
+          "push",
+          "registry_package",
+          "release",
+          "repository",
+          "repository_dispatch",
+          "status",
+          "watch",
+          "workflow_dispatch",
+          "workflow_run"
+        ],
+        "external_url": "https://help.github.com/en/actions",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 15368,
+        "name": "GitHub Actions",
+        "node_id": "MDM6QXBwMTUzNjg=",
+        "owner": {
+          "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+          "events_url": "https://api.github.com/users/github/events{/privacy}",
+          "followers_url": "https://api.github.com/users/github/followers",
+          "following_url": "https://api.github.com/users/github/following{/other_user}",
+          "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+          "gravatar_id": "",
+          "html_url": "https://github.com/github",
+          "id": 9919,
+          "login": "github",
+          "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+          "organizations_url": "https://api.github.com/users/github/orgs",
+          "received_events_url": "https://api.github.com/users/github/received_events",
+          "repos_url": "https://api.github.com/users/github/repos",
+          "site_admin": false,
+          "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+          "type": "Organization",
+          "url": "https://api.github.com/users/github",
+          "user_view_type": "public"
+        },
+        "permissions": {
+          "actions": "write",
+          "administration": "read",
+          "artifact_metadata": "write",
+          "attestations": "write",
+          "checks": "write",
+          "code_quality": "write",
+          "contents": "write",
+          "copilot_requests": "write",
+          "deployments": "write",
+          "discussions": "write",
+          "drives": "write",
+          "issues": "write",
+          "merge_queues": "write",
+          "metadata": "read",
+          "models": "read",
+          "packages": "write",
+          "pages": "write",
+          "pull_requests": "write",
+          "repository_hooks": "write",
+          "repository_projects": "write",
+          "security_events": "write",
+          "statuses": "write",
+          "vulnerability_alerts": "read"
+        },
+        "slug": "github-actions",
+        "updated_at": "2026-06-18T16:17:48Z"
+      },
+      "check_suite": {
+        "id": 82486238737
+      },
+      "completed_at": "2026-07-29T07:18:58Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/actions/runs/30431196700/job/90508588485",
+      "external_id": "17b5de0d-ec0a-589e-a3cc-5f5c6d604d03",
+      "head_sha": "eec8914029ee64c4628faa061fa83fe821b8fdbc",
+      "html_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/actions/runs/30431196700/job/90508588485",
+      "id": 90508588485,
+      "name": "review",
+      "node_id": "CR_kwDOTk1TRM8AAAAVErt1xQ",
+      "output": {
+        "annotations_count": 2,
+        "annotations_url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/check-runs/90508588485/annotations",
+        "summary": null,
+        "text": null,
+        "title": null
+      },
+      "pull_requests": [],
+      "started_at": "2026-07-29T07:18:53Z",
+      "status": "completed",
+      "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/check-runs/90508588485"
+    }
+  ],
+  "compliance_comment": "<!-- shadow-ci:audit -->\n## ✅ Shadow Compliance — Audit: Passed (95%)\n\n| Check | Result |\n|---|---|\n| Tickets | #24 |\n| Invalid tickets | — |\n| Unspecced changes | — |\n| Untested files | app/src/server.ts |\n| Missing PR sections | — |\n| Missing reviewers | — |\n| Unresolved findings | 0 |\n\n<sub>shadow-ci · phase awaiting-review · run 30431196840</sub>\n",
+  "issue_comments": [
+    {
+      "author_association": "NONE",
+      "body": "<!-- shadow-review -->\n## Shadow Review\n⚠️ **No LLM key configured — this PR was NOT independently reviewed.** Set ANTHROPIC_API_KEY (or GEMINI/OPENAI) as a repo secret to arm the reviewer. This notice satisfies the reviewer-presence gate so work isn't deadlocked, but it is itself evidence of the gap.",
+      "created_at": "2026-07-29T07:18:57Z",
+      "html_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/pull/25#issuecomment-5114421139",
+      "id": 5114421139,
+      "issue_url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/issues/25",
+      "minimized": null,
+      "node_id": "IC_kwDOTk1TRM8AAAABMNffkw",
+      "performed_via_github_app": {
+        "client_id": "Iv1.05c79e9ad1f6bdfa",
+        "created_at": "2018-07-30T09:30:17Z",
+        "description": "Automate your workflow from idea to production",
+        "events": [
+          "branch_protection_rule",
+          "check_run",
+          "check_suite",
+          "create",
+          "delete",
+          "deployment",
+          "deployment_status",
+          "discussion",
+          "discussion_comment",
+          "fork",
+          "gollum",
+          "issues",
+          "issue_comment",
+          "label",
+          "merge_group",
+          "milestone",
+          "page_build",
+          "public",
+          "pull_request",
+          "pull_request_review",
+          "pull_request_review_comment",
+          "push",
+          "registry_package",
+          "release",
+          "repository",
+          "repository_dispatch",
+          "status",
+          "watch",
+          "workflow_dispatch",
+          "workflow_run"
+        ],
+        "external_url": "https://help.github.com/en/actions",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 15368,
+        "name": "GitHub Actions",
+        "node_id": "MDM6QXBwMTUzNjg=",
+        "owner": {
+          "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+          "events_url": "https://api.github.com/users/github/events{/privacy}",
+          "followers_url": "https://api.github.com/users/github/followers",
+          "following_url": "https://api.github.com/users/github/following{/other_user}",
+          "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+          "gravatar_id": "",
+          "html_url": "https://github.com/github",
+          "id": 9919,
+          "login": "github",
+          "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+          "organizations_url": "https://api.github.com/users/github/orgs",
+          "received_events_url": "https://api.github.com/users/github/received_events",
+          "repos_url": "https://api.github.com/users/github/repos",
+          "site_admin": false,
+          "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+          "type": "Organization",
+          "url": "https://api.github.com/users/github",
+          "user_view_type": "public"
+        },
+        "permissions": {
+          "actions": "write",
+          "administration": "read",
+          "artifact_metadata": "write",
+          "attestations": "write",
+          "checks": "write",
+          "code_quality": "write",
+          "contents": "write",
+          "copilot_requests": "write",
+          "deployments": "write",
+          "discussions": "write",
+          "drives": "write",
+          "issues": "write",
+          "merge_queues": "write",
+          "metadata": "read",
+          "models": "read",
+          "packages": "write",
+          "pages": "write",
+          "pull_requests": "write",
+          "repository_hooks": "write",
+          "repository_projects": "write",
+          "security_events": "write",
+          "statuses": "write",
+          "vulnerability_alerts": "read"
+        },
+        "slug": "github-actions",
+        "updated_at": "2026-06-18T16:17:48Z"
+      },
+      "reactions": {
+        "+1": 0,
+        "-1": 0,
+        "confused": 0,
+        "eyes": 0,
+        "heart": 0,
+        "hooray": 0,
+        "laugh": 0,
+        "rocket": 0,
+        "total_count": 0,
+        "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/issues/comments/5114421139/reactions"
+      },
+      "updated_at": "2026-07-29T07:18:57Z",
+      "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/issues/comments/5114421139",
+      "user": {
+        "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
+        "events_url": "https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}",
+        "followers_url": "https://api.github.com/users/github-actions%5Bbot%5D/followers",
+        "following_url": "https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}",
+        "gists_url": "https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}",
+        "gravatar_id": "",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 41898282,
+        "login": "github-actions[bot]",
+        "node_id": "MDM6Qm90NDE4OTgyODI=",
+        "organizations_url": "https://api.github.com/users/github-actions%5Bbot%5D/orgs",
+        "received_events_url": "https://api.github.com/users/github-actions%5Bbot%5D/received_events",
+        "repos_url": "https://api.github.com/users/github-actions%5Bbot%5D/repos",
+        "site_admin": false,
+        "starred_url": "https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/github-actions%5Bbot%5D/subscriptions",
+        "type": "Bot",
+        "url": "https://api.github.com/users/github-actions%5Bbot%5D",
+        "user_view_type": "public"
+      }
+    },
+    {
+      "author_association": "NONE",
+      "body": "<!-- shadow-ci:review-gate -->\n## ✅ Shadow Compliance — Review Gate: Passed (95%)\n\n| Check | Result |\n|---|---|\n| Tickets | #24 |\n| Invalid tickets | — |\n| Unspecced changes | — |\n| Untested files | app/src/server.ts |\n| Missing PR sections | — |\n| Missing reviewers | — |\n| Unresolved findings | 0 |\n\n<sub>shadow-ci · phase post-review · run 30431196840</sub>\n",
+      "created_at": "2026-07-29T07:19:20Z",
+      "html_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/pull/25#issuecomment-5114424371",
+      "id": 5114424371,
+      "issue_url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/issues/25",
+      "minimized": null,
+      "node_id": "IC_kwDOTk1TRM8AAAABMNfsMw",
+      "performed_via_github_app": {
+        "client_id": "Iv1.05c79e9ad1f6bdfa",
+        "created_at": "2018-07-30T09:30:17Z",
+        "description": "Automate your workflow from idea to production",
+        "events": [
+          "branch_protection_rule",
+          "check_run",
+          "check_suite",
+          "create",
+          "delete",
+          "deployment",
+          "deployment_status",
+          "discussion",
+          "discussion_comment",
+          "fork",
+          "gollum",
+          "issues",
+          "issue_comment",
+          "label",
+          "merge_group",
+          "milestone",
+          "page_build",
+          "public",
+          "pull_request",
+          "pull_request_review",
+          "pull_request_review_comment",
+          "push",
+          "registry_package",
+          "release",
+          "repository",
+          "repository_dispatch",
+          "status",
+          "watch",
+          "workflow_dispatch",
+          "workflow_run"
+        ],
+        "external_url": "https://help.github.com/en/actions",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 15368,
+        "name": "GitHub Actions",
+        "node_id": "MDM6QXBwMTUzNjg=",
+        "owner": {
+          "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+          "events_url": "https://api.github.com/users/github/events{/privacy}",
+          "followers_url": "https://api.github.com/users/github/followers",
+          "following_url": "https://api.github.com/users/github/following{/other_user}",
+          "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+          "gravatar_id": "",
+          "html_url": "https://github.com/github",
+          "id": 9919,
+          "login": "github",
+          "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+          "organizations_url": "https://api.github.com/users/github/orgs",
+          "received_events_url": "https://api.github.com/users/github/received_events",
+          "repos_url": "https://api.github.com/users/github/repos",
+          "site_admin": false,
+          "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+          "type": "Organization",
+          "url": "https://api.github.com/users/github",
+          "user_view_type": "public"
+        },
+        "permissions": {
+          "actions": "write",
+          "administration": "read",
+          "artifact_metadata": "write",
+          "attestations": "write",
+          "checks": "write",
+          "code_quality": "write",
+          "contents": "write",
+          "copilot_requests": "write",
+          "deployments": "write",
+          "discussions": "write",
+          "drives": "write",
+          "issues": "write",
+          "merge_queues": "write",
+          "metadata": "read",
+          "models": "read",
+          "packages": "write",
+          "pages": "write",
+          "pull_requests": "write",
+          "repository_hooks": "write",
+          "repository_projects": "write",
+          "security_events": "write",
+          "statuses": "write",
+          "vulnerability_alerts": "read"
+        },
+        "slug": "github-actions",
+        "updated_at": "2026-06-18T16:17:48Z"
+      },
+      "reactions": {
+        "+1": 0,
+        "-1": 0,
+        "confused": 0,
+        "eyes": 0,
+        "heart": 0,
+        "hooray": 0,
+        "laugh": 0,
+        "rocket": 0,
+        "total_count": 0,
+        "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/issues/comments/5114424371/reactions"
+      },
+      "updated_at": "2026-07-29T07:19:20Z",
+      "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/issues/comments/5114424371",
+      "user": {
+        "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
+        "events_url": "https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}",
+        "followers_url": "https://api.github.com/users/github-actions%5Bbot%5D/followers",
+        "following_url": "https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}",
+        "gists_url": "https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}",
+        "gravatar_id": "",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 41898282,
+        "login": "github-actions[bot]",
+        "node_id": "MDM6Qm90NDE4OTgyODI=",
+        "organizations_url": "https://api.github.com/users/github-actions%5Bbot%5D/orgs",
+        "received_events_url": "https://api.github.com/users/github-actions%5Bbot%5D/received_events",
+        "repos_url": "https://api.github.com/users/github-actions%5Bbot%5D/repos",
+        "site_admin": false,
+        "starred_url": "https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/github-actions%5Bbot%5D/subscriptions",
+        "type": "Bot",
+        "url": "https://api.github.com/users/github-actions%5Bbot%5D",
+        "user_view_type": "public"
+      }
+    },
+    {
+      "author_association": "NONE",
+      "body": "<!-- shadow-ci:audit -->\n## ✅ Shadow Compliance — Audit: Passed (95%)\n\n| Check | Result |\n|---|---|\n| Tickets | #24 |\n| Invalid tickets | — |\n| Unspecced changes | — |\n| Untested files | app/src/server.ts |\n| Missing PR sections | — |\n| Missing reviewers | — |\n| Unresolved findings | 0 |\n\n<sub>shadow-ci · phase awaiting-review · run 30431196840</sub>\n",
+      "created_at": "2026-07-29T07:19:21Z",
+      "html_url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/pull/25#issuecomment-5114424525",
+      "id": 5114424525,
+      "issue_url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/issues/25",
+      "minimized": null,
+      "node_id": "IC_kwDOTk1TRM8AAAABMNfszQ",
+      "performed_via_github_app": {
+        "client_id": "Iv1.05c79e9ad1f6bdfa",
+        "created_at": "2018-07-30T09:30:17Z",
+        "description": "Automate your workflow from idea to production",
+        "events": [
+          "branch_protection_rule",
+          "check_run",
+          "check_suite",
+          "create",
+          "delete",
+          "deployment",
+          "deployment_status",
+          "discussion",
+          "discussion_comment",
+          "fork",
+          "gollum",
+          "issues",
+          "issue_comment",
+          "label",
+          "merge_group",
+          "milestone",
+          "page_build",
+          "public",
+          "pull_request",
+          "pull_request_review",
+          "pull_request_review_comment",
+          "push",
+          "registry_package",
+          "release",
+          "repository",
+          "repository_dispatch",
+          "status",
+          "watch",
+          "workflow_dispatch",
+          "workflow_run"
+        ],
+        "external_url": "https://help.github.com/en/actions",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 15368,
+        "name": "GitHub Actions",
+        "node_id": "MDM6QXBwMTUzNjg=",
+        "owner": {
+          "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+          "events_url": "https://api.github.com/users/github/events{/privacy}",
+          "followers_url": "https://api.github.com/users/github/followers",
+          "following_url": "https://api.github.com/users/github/following{/other_user}",
+          "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+          "gravatar_id": "",
+          "html_url": "https://github.com/github",
+          "id": 9919,
+          "login": "github",
+          "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+          "organizations_url": "https://api.github.com/users/github/orgs",
+          "received_events_url": "https://api.github.com/users/github/received_events",
+          "repos_url": "https://api.github.com/users/github/repos",
+          "site_admin": false,
+          "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+          "type": "Organization",
+          "url": "https://api.github.com/users/github",
+          "user_view_type": "public"
+        },
+        "permissions": {
+          "actions": "write",
+          "administration": "read",
+          "artifact_metadata": "write",
+          "attestations": "write",
+          "checks": "write",
+          "code_quality": "write",
+          "contents": "write",
+          "copilot_requests": "write",
+          "deployments": "write",
+          "discussions": "write",
+          "drives": "write",
+          "issues": "write",
+          "merge_queues": "write",
+          "metadata": "read",
+          "models": "read",
+          "packages": "write",
+          "pages": "write",
+          "pull_requests": "write",
+          "repository_hooks": "write",
+          "repository_projects": "write",
+          "security_events": "write",
+          "statuses": "write",
+          "vulnerability_alerts": "read"
+        },
+        "slug": "github-actions",
+        "updated_at": "2026-06-18T16:17:48Z"
+      },
+      "reactions": {
+        "+1": 0,
+        "-1": 0,
+        "confused": 0,
+        "eyes": 0,
+        "heart": 0,
+        "hooray": 0,
+        "laugh": 0,
+        "rocket": 0,
+        "total_count": 0,
+        "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/issues/comments/5114424525/reactions"
+      },
+      "updated_at": "2026-07-29T07:19:21Z",
+      "url": "https://api.github.com/repos/dorkalev/shadow-genesis-20260727-100448/issues/comments/5114424525",
+      "user": {
+        "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
+        "events_url": "https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}",
+        "followers_url": "https://api.github.com/users/github-actions%5Bbot%5D/followers",
+        "following_url": "https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}",
+        "gists_url": "https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}",
+        "gravatar_id": "",
+        "html_url": "https://github.com/apps/github-actions",
+        "id": 41898282,
+        "login": "github-actions[bot]",
+        "node_id": "MDM6Qm90NDE4OTgyODI=",
+        "organizations_url": "https://api.github.com/users/github-actions%5Bbot%5D/orgs",
+        "received_events_url": "https://api.github.com/users/github-actions%5Bbot%5D/received_events",
+        "repos_url": "https://api.github.com/users/github-actions%5Bbot%5D/repos",
+        "site_admin": false,
+        "starred_url": "https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/github-actions%5Bbot%5D/subscriptions",
+        "type": "Bot",
+        "url": "https://api.github.com/users/github-actions%5Bbot%5D",
+        "user_view_type": "public"
+      }
+    }
+  ],
+  "pr": {
+    "additions": 3807,
+    "author": {
+      "id": "MDQ6VXNlcjY4MjM1",
+      "is_bot": false,
+      "login": "dorkalev",
+      "name": "Dor Kalev"
+    },
+    "baseRefName": "main",
+    "body": "## Summary\nPromote the reviewed, gate-approved history from `staging` to the default branch `main`. Every commit on staging already passed the compliance gate and was archived; this promotion releases the policy pack, the processing-integrity app, the privacy app, and the governance artifacts to production so the system description and the criteria verifier evaluate the released branch. No new code — a promotion of already-approved changes.\n\n## Tickets\n| Ticket | Title | Status |\n|---|---|---|\n| #24 | Promote staging → production (main) | In Progress |\n\n## Changes\n- .shadow/site/Cargo.lock\n- .well-known/security.txt\n- SYSTEM-DESCRIPTION.md\n- app/.gitignore\n- app/Dockerfile\n- app/PRIVACY-NOTICE.md\n- app/SPEC.md\n- app/openapi.json\n- app/package-lock.json\n- app/package.json\n- app/src/pi.ts\n- app/src/privacy.ts\n- app/src/server.ts\n- app/test/pi.test.ts\n- app/test/privacy.test.ts\n- app/tsconfig.json\n- compliance/data-inventory.yaml\n- docs/data-flows.md\n- evidence/endpoints/wipes/README.md\n- evidence/github/account-2fa-2026-07-28.json\n- evidence/github/rulesets-2026-07-28.json\n- evidence/github/security-settings-2026-07-28.json\n- evidence/privacy/breach-register-2026.csv\n- evidence/risk-assessment-2026/analysis.md\n- evidence/security-events/2026-Q3-register.csv\n- evidence/subservice/cloud-github-soc2-review-2026.md\n- evidence/vendors/README.md\n- heartbeat.md\n- inventory/devices.yaml\n- inventory/systems.md\n- judgment.sh\n- policies/README.md\n- policies/acceptable-use-policy.md\n- policies/access-control.md\n- policies/access-register.md\n- policies/ai-agent-use.md\n- policies/bcdr.md\n- policies/change-management.md\n- policies/code-of-conduct.md\n- policies/controls.md\n- policies/data-classification.md\n- policies/data-handling.md\n- policies/data-retention.md\n- policies/encryption.md\n- policies/governance.md\n- policies/incident-response.md\n- policies/information-security.md\n- policies/logging-and-monitoring.md\n- policies/objectives-and-commitments.md\n- policies/onboarding-offboarding.md\n- policies/people-security.md\n- policies/physical-security.md\n- policies/privacy.md\n- policies/processing-integrity.md\n- policies/risk-management.md\n- policies/risk-register.md\n- policies/role-matrix.md\n- policies/roles-and-responsibilities.md\n- policies/security-training.md\n- policies/vendor-management.md\n- policies/vendor-register.md\n- policies/vulnerability-and-deficiency-management.md\n- policies/vulnerability-management.md\n- runbooks/hotfix.md\n- runbooks/incident-response.md\n- runbooks/offboarding.md\n- runbooks/onboarding.md\n- shadow/scope.json\n\n## Test Plan\n- [x] Every included commit was individually gated and archived on staging\n- [x] App tests (pi.test.ts, privacy.test.ts) present and green on staging\n- [x] Promotion only; main will fast-forward-equivalent to staging content\n- [x] Post-merge archive records the promotion",
+    "commits": [
+      {
+        "authoredDate": "2026-07-27T10:04:59Z",
+        "authors": [
+          {
+            "email": "genesis@noreply.local",
+            "id": "",
+            "login": "",
+            "name": "genesis"
+          }
+        ],
+        "committedDate": "2026-07-27T10:04:59Z",
+        "messageBody": "",
+        "messageHeadline": "Shadow scope (security only — no cloud runtime yet)",
+        "oid": "eea12014d306814a81493d43117c55974775de6a"
+      },
+      {
+        "authoredDate": "2026-07-27T10:11:29Z",
+        "authors": [
+          {
+            "email": "dor@dorkalev.com",
+            "id": "MDQ6VXNlcjY4MjM1",
+            "login": "dorkalev",
+            "name": "Dor Kalev"
+          },
+          {
+            "email": "genesis@noreply.local",
+            "id": "",
+            "login": "",
+            "name": "genesis"
+          }
+        ],
+        "committedDate": "2026-07-27T10:11:29Z",
+        "messageBody": "Co-authored-by: genesis <genesis@noreply.local>",
+        "messageHeadline": "Judgment heartbeat (#1) (#2)",
+        "oid": "c3326f000ec1210c37661cbff75e284821d8abf6"
+      },
+      {
+        "authoredDate": "2026-07-27T11:19:46Z",
+        "authors": [
+          {
+            "email": "dor@dorkalev.com",
+            "id": "MDQ6VXNlcjY4MjM1",
+            "login": "dorkalev",
+            "name": "Dor Kalev"
+          }
+        ],
+        "committedDate": "2026-07-27T11:19:46Z",
+        "messageBody": "…nd security.txt (#8)",
+        "messageHeadline": "Establish the policy pack, registers, runbooks, system description, a…",
+        "oid": "b7ba4949169fc1016dbd0278a82bf6277750d8ec"
+      },
+      {
+        "authoredDate": "2026-07-28T09:44:52Z",
+        "authors": [
+          {
+            "email": "dor@dorkalev.com",
+            "id": "MDQ6VXNlcjY4MjM1",
+            "login": "dorkalev",
+            "name": "Dor Kalev"
+          }
+        ],
+        "committedDate": "2026-07-28T09:44:52Z",
+        "messageBody": "…ence exports & risk analysis (#17)",
+        "messageHeadline": "Add governance, people-security, deficiency-mgmt policies + real evid…",
+        "oid": "f30e2a4e8d129bca81aca0f3965a64ee6f4fadec"
+      },
+      {
+        "authoredDate": "2026-07-28T14:35:10Z",
+        "authors": [
+          {
+            "email": "dor@dorkalev.com",
+            "id": "MDQ6VXNlcjY4MjM1",
+            "login": "dorkalev",
+            "name": "Dor Kalev"
+          }
+        ],
+        "committedDate": "2026-07-28T14:35:10Z",
+        "messageBody": "….5) + tests (#19)",
+        "messageHeadline": "Add measurements service: real processing-integrity controls (PI1.1-1…",
+        "oid": "85c16ea2b758ab404b0bb30f5b6035860e170361"
+      },
+      {
+        "authoredDate": "2026-07-28T14:35:16Z",
+        "authors": [
+          {
+            "email": "dor@boltx.com",
+            "id": "MDQ6VXNlcjY4MjM1",
+            "login": "dorkalev",
+            "name": "Dor Kalev"
+          }
+        ],
+        "committedDate": "2026-07-28T14:35:16Z",
+        "messageBody": "",
+        "messageHeadline": "scope: add processing_integrity (real app now exists)",
+        "oid": "a6532a91bbe595981e5e0a4f2eda820be5e0be2a"
+      },
+      {
+        "authoredDate": "2026-07-28T15:37:16Z",
+        "authors": [
+          {
+            "email": "dor@dorkalev.com",
+            "id": "MDQ6VXNlcjY4MjM1",
+            "login": "dorkalev",
+            "name": "Dor Kalev"
+          }
+        ],
+        "committedDate": "2026-07-28T15:37:16Z",
+        "messageBody": "…etention, disclosure log, complaints (P1-P8) (#21)",
+        "messageHeadline": "Add privacy controls: consent, notice, DSAR (export/correct/erase), r…",
+        "oid": "bc02d74491b7048270e76e183b7806cb0dbeee2c"
+      },
+      {
+        "authoredDate": "2026-07-28T15:37:55Z",
+        "authors": [
+          {
+            "email": "dor@boltx.com",
+            "id": "MDQ6VXNlcjY4MjM1",
+            "login": "dorkalev",
+            "name": "Dor Kalev"
+          }
+        ],
+        "committedDate": "2026-07-28T15:37:55Z",
+        "messageBody": "",
+        "messageHeadline": "scope: add privacy (real privacy controls now exist)",
+        "oid": "090dd94fef836fe1ba1d4918ef0d5d7d43288cde"
+      },
+      {
+        "authoredDate": "2026-07-29T07:15:21Z",
+        "authors": [
+          {
+            "email": "dor@dorkalev.com",
+            "id": "MDQ6VXNlcjY4MjM1",
+            "login": "dorkalev",
+            "name": "Dor Kalev"
+          }
+        ],
+        "committedDate": "2026-07-29T07:15:21Z",
+        "messageBody": "…ls (#22) (#23)",
+        "messageHeadline": "Governance artifacts: control matrix, inventories, AI policy, approva…",
+        "oid": "eec8914029ee64c4628faa061fa83fe821b8fdbc"
+      }
+    ],
+    "createdAt": "2026-07-29T07:18:47Z",
+    "deletions": 6,
+    "files": [
+      {
+        "additions": 650,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": ".shadow/site/Cargo.lock"
+      },
+      {
+        "additions": 4,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": ".well-known/security.txt"
+      },
+      {
+        "additions": 11,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "SYSTEM-DESCRIPTION.md"
+      },
+      {
+        "additions": 3,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/.gitignore"
+      },
+      {
+        "additions": 15,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/Dockerfile"
+      },
+      {
+        "additions": 11,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/PRIVACY-NOTICE.md"
+      },
+      {
+        "additions": 11,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/SPEC.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/openapi.json"
+      },
+      {
+        "additions": 1989,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/package-lock.json"
+      },
+      {
+        "additions": 20,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/package.json"
+      },
+      {
+        "additions": 79,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/src/pi.ts"
+      },
+      {
+        "additions": 54,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/src/privacy.ts"
+      },
+      {
+        "additions": 113,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/src/server.ts"
+      },
+      {
+        "additions": 28,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/test/pi.test.ts"
+      },
+      {
+        "additions": 27,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/test/privacy.test.ts"
+      },
+      {
+        "additions": 2,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "app/tsconfig.json"
+      },
+      {
+        "additions": 53,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "compliance/data-inventory.yaml"
+      },
+      {
+        "additions": 42,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "docs/data-flows.md"
+      },
+      {
+        "additions": 1,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "evidence/endpoints/wipes/README.md"
+      },
+      {
+        "additions": 1,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "evidence/github/account-2fa-2026-07-28.json"
+      },
+      {
+        "additions": 1,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "evidence/github/rulesets-2026-07-28.json"
+      },
+      {
+        "additions": 1,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "evidence/github/security-settings-2026-07-28.json"
+      },
+      {
+        "additions": 2,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "evidence/privacy/breach-register-2026.csv"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "evidence/risk-assessment-2026/analysis.md"
+      },
+      {
+        "additions": 2,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "evidence/security-events/2026-Q3-register.csv"
+      },
+      {
+        "additions": 8,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "evidence/subservice/cloud-github-soc2-review-2026.md"
+      },
+      {
+        "additions": 20,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "evidence/vendors/README.md"
+      },
+      {
+        "additions": 1,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "heartbeat.md"
+      },
+      {
+        "additions": 18,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "inventory/devices.yaml"
+      },
+      {
+        "additions": 26,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "inventory/systems.md"
+      },
+      {
+        "additions": 19,
+        "changeType": "MODIFIED",
+        "deletions": 0,
+        "path": "judgment.sh"
+      },
+      {
+        "additions": 26,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/README.md"
+      },
+      {
+        "additions": 18,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/acceptable-use-policy.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/access-control.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "MODIFIED",
+        "deletions": 2,
+        "path": "policies/access-register.md"
+      },
+      {
+        "additions": 53,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/ai-agent-use.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/bcdr.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/change-management.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/code-of-conduct.md"
+      },
+      {
+        "additions": 43,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/controls.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/data-classification.md"
+      },
+      {
+        "additions": 45,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/data-handling.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/data-retention.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/encryption.md"
+      },
+      {
+        "additions": 10,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/governance.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/incident-response.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/information-security.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/logging-and-monitoring.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/objectives-and-commitments.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/onboarding-offboarding.md"
+      },
+      {
+        "additions": 10,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/people-security.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/physical-security.md"
+      },
+      {
+        "additions": 10,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/privacy.md"
+      },
+      {
+        "additions": 10,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/processing-integrity.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/risk-management.md"
+      },
+      {
+        "additions": 24,
+        "changeType": "MODIFIED",
+        "deletions": 2,
+        "path": "policies/risk-register.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/role-matrix.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/roles-and-responsibilities.md"
+      },
+      {
+        "additions": 16,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/security-training.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/vendor-management.md"
+      },
+      {
+        "additions": 14,
+        "changeType": "MODIFIED",
+        "deletions": 2,
+        "path": "policies/vendor-register.md"
+      },
+      {
+        "additions": 10,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/vulnerability-and-deficiency-management.md"
+      },
+      {
+        "additions": 13,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "policies/vulnerability-management.md"
+      },
+      {
+        "additions": 3,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "runbooks/hotfix.md"
+      },
+      {
+        "additions": 22,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "runbooks/incident-response.md"
+      },
+      {
+        "additions": 3,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "runbooks/offboarding.md"
+      },
+      {
+        "additions": 3,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "runbooks/onboarding.md"
+      },
+      {
+        "additions": 2,
+        "changeType": "ADDED",
+        "deletions": 0,
+        "path": "shadow/scope.json"
+      }
+    ],
+    "headRefName": "staging",
+    "headRefOid": "eec8914029ee64c4628faa061fa83fe821b8fdbc",
+    "labels": [],
+    "mergedAt": "2026-07-29T07:28:23Z",
+    "mergedBy": {
+      "id": "MDQ6VXNlcjY4MjM1",
+      "is_bot": false,
+      "login": "dorkalev",
+      "name": "Dor Kalev"
+    },
+    "number": 25,
+    "reviews": [],
+    "title": "#24: Promote staging → production (main)",
+    "url": "https://github.com/dorkalev/shadow-genesis-20260727-100448/pull/25"
+  },
+  "review_comments": [],
+  "statuses": [],
+  "tickets": []
+}
