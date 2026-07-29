@@ -1,0 +1,13 @@
+{ "openapi": "3.0.3", "info": { "title": "Measurements", "version": "1.0.0",
+  "description": "Processing-integrity reference service (PI1.1 data definitions + processing specs)." },
+  "paths": {
+    "/readings": { "post": { "summary": "Ingest a reading (validated, idempotent, integrity-hashed)",
+      "parameters": [{ "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string" } }],
+      "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Reading" } } } },
+      "responses": { "201": { "description": "stored" }, "200": { "description": "idempotent replay" }, "422": { "description": "validation errors" } } } },
+    "/readings/{device_id}/summary": { "get": { "summary": "Integrity-checked aggregate (PI1.4)",
+      "responses": { "200": { "description": "summary with integrity_ok flag" } } } } },
+  "components": { "schemas": { "Reading": { "type": "object", "required": ["device_id","metric","value"],
+    "properties": { "device_id": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,64}$" },
+      "metric": { "type": "string", "enum": ["temperature","humidity","pressure"] },
+      "value": { "type": "number" }, "observed_at": { "type": "string", "format": "date-time" } } } } } }

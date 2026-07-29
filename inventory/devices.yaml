@@ -1,0 +1,18 @@
+# Device / endpoint roster (CC6.4, CC6.7)
+# Endpoints with access to Internal/Confidential data. Reviewed annually and on change.
+last_reviewed: 2026-07-29
+owner: dorkalev
+devices:
+  - id: dev-primary
+    owner: dorkalev
+    type: laptop
+    os: macOS
+    disk_encryption: FileVault (AES-256)
+    screen_lock: enabled (password, <=5 min)
+    mdm: none (single-owner team; controls verified manually and recorded here)
+    data_class: Confidential (at rest during development)
+    notes: Sole development endpoint. No removable media used (see policies/data-handling.md).
+policy: >
+  Removable media is prohibited for Internal/Confidential data. Endpoints use full-disk
+  encryption and auto-lock. Loss/theft is handled per the incident-response runbook (remote
+  wipe / credential rotation); wipe capability documented in evidence/endpoints/wipes/.
