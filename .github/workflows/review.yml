@@ -44,21 +44,23 @@ jobs:
           HAS_OPENAI: ${{ secrets.OPENAI_API_KEY != '' }}
         run: |
           set -euo pipefail
+          # emit only the CLI NAME (never a command string with shell metacharacters —
+          # interpolating `--allowedTools Bash(gh:*)` unquoted breaks the shell)
           if [ "$HAS_ANTHROPIC" = "true" ]; then
             npm install -g @anthropic-ai/claude-code
-            echo 'runner=claude --allowedTools Bash(gh:*),Read,Glob,Grep -p' >> "$GITHUB_OUTPUT"
+            echo 'cli=claude' >> "$GITHUB_OUTPUT"
           elif [ "$HAS_GEMINI" = "true" ]; then
             npm install -g @google/gemini-cli
-            echo 'runner=gemini -p' >> "$GITHUB_OUTPUT"
+            echo 'cli=gemini' >> "$GITHUB_OUTPUT"
           elif [ "$HAS_OPENAI" = "true" ]; then
             npm install -g @openai/codex
-            echo 'runner=codex exec' >> "$GITHUB_OUTPUT"
+            echo 'cli=codex' >> "$GITHUB_OUTPUT"
           else
-            echo 'runner=' >> "$GITHUB_OUTPUT"
+            echo 'cli=' >> "$GITHUB_OUTPUT"
           fi
 
       - name: Review the PR
-        if: steps.llm.outputs.runner != ''
+        if: steps.llm.outputs.cli != ''
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -66,10 +68,33 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          ${{ steps.llm.outputs.runner }} "$(cat .shadow/agent/06-code-review.md)"
+          set -euo pipefail
+          PROMPT="$(cat .shadow/agent/06-code-review.md)"
+          case "${{ steps.llm.outputs.cli }}" in
+            claude) claude -p "$PROMPT" --allowedTools "Bash(gh:*),Read,Glob,Grep" ;;
+            gemini) gemini -p "$PROMPT" ;;
+            codex)  codex exec "$PROMPT" ;;
+          esac
+
+      # Safety net: if the reviewer ran but didn't leave its marker (errored/timed
+      # out), post an honest one so the review-gate isn't deadlocked — while recording
+      # that automated review did not complete. Runs even if the step above failed.
+      - name: Ensure reviewer marker
+        if: ${{ always() && steps.llm.outputs.cli != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          have=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
+            --jq '[.[] | select(.body | contains("<!-- shadow-review -->"))] | length' 2>/dev/null || echo 0)
+          if [ "$have" = "0" ]; then
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" -f body="<!-- shadow-review -->
+          ## Shadow Review
+          ⚠️ The reviewer agent did not post findings this run (it errored or timed out). This marker satisfies the reviewer-presence gate but records that automated review did not complete — re-run the review or review manually before relying on it." >/dev/null || true
+          fi
 
       - name: No reviewer configured (loud, not silent)
-        if: steps.llm.outputs.runner == ''
+        if: steps.llm.outputs.cli == ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
