@@ -1,7 +1,7 @@
 ---
 owner: dorkalev
 version: 1.0
-approved_by: OPEN
+approved_by: dorkalev
 review_by: 2027-07-28
 criteria: CC1.4
 ---

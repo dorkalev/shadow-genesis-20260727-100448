@@ -1,0 +1,53 @@
+# Machine-readable data inventory (CC6.7, C1.1, P-series).
+# What personal / customer data we hold, where, why, how long, and who it flows to.
+# Reviewed at least annually and on significant change.
+version: 1.0
+last_reviewed: 2026-07-29
+owner: dorkalev
+
+data_categories:
+  - name: measurement_readings
+    classification: Confidential
+    contains_personal_data: false
+    store: Firestore collection `readings` (shadow-dk-246464)
+    purpose: Processing-integrity demo — validated, idempotent, hash-verified readings
+    retention: per policies/data-retention.md
+    encryption: at rest (GCP CMEK) + in transit (TLS)
+
+  - name: subjects
+    classification: Confidential
+    contains_personal_data: true
+    fields: [subject_id, contact, consent_state]
+    store: Firestore collection `subjects`
+    purpose: Privacy demo — consent, DSAR (export/correct/erase)
+    retention: until erasure request or retention expiry (data-retention.md)
+    lawful_basis: consent
+    subject_rights: [access/export, correction, erasure]
+
+  - name: disclosures
+    classification: Internal
+    contains_personal_data: false
+    store: Firestore collection `disclosures`
+    purpose: Record of data disclosures (P6.x)
+
+  - name: privacy_complaints
+    classification: Confidential
+    contains_personal_data: true
+    store: Firestore collection `complaints`
+    purpose: Complaint intake and handling (P8.1)
+
+sub_processors:
+  - name: Google Cloud (Firestore, Cloud Run, Logging, Monitoring)
+    role: infrastructure / data hosting
+    dpa: yes (Google Cloud DPA) — see evidence/vendors/
+    region: configured in provision/
+  - name: GitHub
+    role: source control, CI/CD
+    dpa: yes (GitHub DPA / GitHub terms) — see evidence/vendors/
+    data: source code, no customer personal data
+  - name: LLM provider (Anthropic/Google/OpenAI — first configured key)
+    role: code review / agent
+    dpa: required; zero-retention / no-train setting where offered
+    data: Public/Internal only — never Confidential (see policies/ai-agent-use.md)
+
+data_flows_doc: ../docs/data-flows.md
