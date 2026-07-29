@@ -1,7 +1,7 @@
 import express from "express";
 import { Firestore } from "@google-cloud/firestore";
 import { validate, integrityHash, canonical, summarize, Reading } from "./pi";
-import { Consent, hasActiveConsent, minimize, assembleExport, isFullyErased, NOTICE_VERSION, Purpose } from "./privacy";
+import { Consent, hasActiveConsent, minimize, assembleExport, isFullyErased, NOTICE_VERSION, Purpose, verifyRequester, dsarLogEntry } from "./privacy";
 
 const db = new Firestore(); // ADC from the Cloud Run runtime SA (datastore.user)
 const app = express();
@@ -55,7 +55,12 @@ app.post("/subjects", async (req, res) => {
   const purposes = Array.isArray(req.body?.purposes) ? req.body.purposes : [];
   const consent: Consent = { subject_id: id, purposes, notice_version: NOTICE_VERSION, granted_at: new Date().toISOString() };
   await db.collection("consents").doc(id).set(consent);
-  await db.collection("subjects").doc(id).set(minimize(req.body)); // P3.1 minimization
+  // P3.1 minimization for profile fields; the DSAR verification secret is stored
+  // separately (it is an auth credential, not profile data) so later export/erase
+  // requests can prove the requester is the subject (P5.1).
+  const subjectDoc: Record<string, unknown> = minimize(req.body);
+  if (typeof req.body?.verification_token === "string") subjectDoc.verification_token = req.body.verification_token;
+  await db.collection("subjects").doc(id).set(subjectDoc);
   res.status(201).json({ consent });
 });
 
@@ -65,17 +70,26 @@ app.delete("/subjects/:id/consent", async (req, res) => {
   res.json({ withdrawn: true });
 });
 
-// P5.1 — DSAR access: export everything held about the subject
+// P5.1 — DSAR access: export everything held about the subject.
+// Requester identity is verified first: the caller must present the subject's
+// verification secret (x-verification-token). Failures are DENIED (403) with a
+// reason, and every request — fulfilled or denied — is written to the DSAR log.
 app.get("/subjects/:id/export", async (req, res) => {
   const id = req.params.id;
-  const [subj, cons, reads, disc] = await Promise.all([
-    db.collection("subjects").doc(id).get(),
+  const subj = await db.collection("subjects").doc(id).get();
+  const expected = subj.exists ? (subj.data() as any)?.verification_token as string | undefined : undefined;
+  const provided = req.header("x-verification-token") ?? undefined;
+  const v = verifyRequester(provided, expected);
+  const now = new Date().toISOString();
+  await db.collection("dsar_log").add(dsarLogEntry(id, "export", v, now));
+  if (!v.ok) return res.status(403).json({ denied: true, reason: v.reason });
+  const [cons, reads, disc] = await Promise.all([
     db.collection("consents").doc(id).get(),
     db.collection("readings").where("subject_id", "==", id).get(),
     db.collection("disclosures").where("subject_id", "==", id).get(),
   ]);
   res.json(assembleExport(id, subj.exists ? subj.data()! : null, cons.exists ? cons.data() as Consent : null,
-    reads.docs.map((d) => d.data()), disc.docs.map((d) => d.data()), new Date().toISOString()));
+    reads.docs.map((d) => d.data()), disc.docs.map((d) => d.data()), now));
 });
 
 // P5.2 — correction
@@ -84,9 +98,15 @@ app.put("/subjects/:id", async (req, res) => {
   res.json({ corrected: true });
 });
 
-// P4.3 — erasure (right to be forgotten); verified complete via an export check
+// P4.3 — erasure (right to be forgotten); verified complete via an export check.
+// Same identity verification + DSAR log as export — erasure is irreversible.
 app.delete("/subjects/:id", async (req, res) => {
   const id = req.params.id;
+  const subjDoc = await db.collection("subjects").doc(id).get();
+  const expected = subjDoc.exists ? (subjDoc.data() as any)?.verification_token as string | undefined : undefined;
+  const v = verifyRequester(req.header("x-verification-token") ?? undefined, expected);
+  await db.collection("dsar_log").add(dsarLogEntry(id, "erase", v, new Date().toISOString()));
+  if (!v.ok) return res.status(403).json({ denied: true, reason: v.reason });
   const reads = await db.collection("readings").where("subject_id", "==", id).get();
   const batch = db.batch();
   reads.docs.forEach((d) => batch.delete(d.ref));

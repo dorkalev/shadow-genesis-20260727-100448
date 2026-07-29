@@ -1,0 +1,22 @@
+# Dependency Review (CC7.1, CC6.8) — blocks a PR that introduces a dependency
+# with a known vulnerability or a disallowed license, before it can merge.
+name: Dependency Review
+
+on:
+  pull_request:
+    branches: [staging, main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
