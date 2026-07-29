@@ -42,53 +42,73 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
-          set -uo pipefail
+          # Own error handling (run EVERY check regardless); a single failing gh call
+          # must not abort the monitor. errexit off on purpose.
+          set +e
+          set -u
+          REPORT="shadow/verify-$(date -u +%F).md"
+          mkdir -p shadow
+          { echo "# Daily drift monitor — $(date -u +%FT%TZ)"; echo; } > "$REPORT"
           fails=()
           check() { # $1=description  $2=1(ok)/0(fail)
-            if [ "$2" = "1" ]; then echo "  ok   $1"; else echo "  FAIL $1"; fails+=("$1"); fi
+            if [ "$2" = "1" ]; then echo "  ok   $1"; echo "- ok — $1" >> "$REPORT"
+            else echo "  FAIL $1"; echo "- **FAIL** — $1" >> "$REPORT"; fails+=("$1"); fi
           }
+          # gh with a hard default on ANY failure (never let a failed call abort us)
+          ghq() { gh "$@" 2>/dev/null; }
 
-          # branch ruleset on default branch requires a PR
-          rules=$(gh api "repos/$REPO/rules/branches/main" --jq '[.[].type]' 2>/dev/null || echo "[]")
-          echo "$rules" | grep -q pull_request && check "main ruleset requires pull_request" 1 || check "main ruleset requires pull_request" 0
-          echo "$rules" | grep -q non_fast_forward && check "main ruleset blocks force-push" 1 || check "main ruleset blocks force-push" 0
+          rules=$(ghq api "repos/$REPO/rules/branches/main" --jq '[.[].type]'); [ -z "$rules" ] && rules="[]"
+          printf '%s' "$rules" | grep -q pull_request && check "main ruleset requires pull_request" 1 || check "main ruleset requires pull_request" 0
+          printf '%s' "$rules" | grep -q non_fast_forward && check "main ruleset blocks force-push" 1 || check "main ruleset blocks force-push" 0
 
-          # code scanning configured
-          state=$(gh api "repos/$REPO/code-scanning/default-setup" --jq '.state' 2>/dev/null || echo "")
+          state=$(ghq api "repos/$REPO/code-scanning/default-setup" --jq '.state')
           [ "$state" = "configured" ] && check "CodeQL default setup configured" 1 || check "CodeQL default setup configured" 0
 
-          # dependabot vulnerability alerts enabled (204 = enabled)
-          code=$(gh api "repos/$REPO/vulnerability-alerts" -i 2>/dev/null | head -1 | grep -oE '[0-9]{3}' | head -1)
-          [ "$code" = "204" ] && check "Dependabot vulnerability alerts enabled" 1 || check "Dependabot vulnerability alerts enabled" 0
+          # vulnerability alerts: endpoint returns 204 (enabled) / 404 (disabled)
+          code=$(ghq api "repos/$REPO/vulnerability-alerts" -i | head -1 | grep -oE '[0-9]{3}' | head -1); [ -z "$code" ] && code="ERR"
+          [ "$code" = "204" ] && check "Dependabot vulnerability alerts enabled" 1 || check "Dependabot vulnerability alerts enabled (got: $code)" 0
 
-          # secret scanning + push protection enabled
-          sec=$(gh api "repos/$REPO" --jq '.security_and_analysis.secret_scanning.status+"/"+.security_and_analysis.secret_scanning_push_protection.status' 2>/dev/null || echo "")
+          sec=$(ghq api "repos/$REPO" --jq '.security_and_analysis.secret_scanning.status+"/"+.security_and_analysis.secret_scanning_push_protection.status')
           [ "$sec" = "enabled/enabled" ] && check "secret scanning + push protection enabled" 1 || check "secret scanning + push protection enabled" 0
 
-          # no OPEN high/critical code-scanning alerts
-          hi=$(gh api "repos/$REPO/code-scanning/alerts?state=open&severity=high" --jq 'length' 2>/dev/null || echo 0)
-          crit=$(gh api "repos/$REPO/code-scanning/alerts?state=open&severity=critical" --jq 'length' 2>/dev/null || echo 0)
-          [ "$((hi+crit))" = "0" ] && check "no open high/critical code-scanning alerts" 1 || check "open high/critical code alerts: $((hi+crit))" 0
+          # open high/critical code-scanning alerts — FAIL-CLOSED: if the query can't be
+          # read (empty), treat as a failure, never as "0 alerts".
+          hi=$(ghq api "repos/$REPO/code-scanning/alerts?state=open&severity=high" --jq 'length')
+          crit=$(ghq api "repos/$REPO/code-scanning/alerts?state=open&severity=critical" --jq 'length')
+          if [ -z "$hi" ] || [ -z "$crit" ]; then check "code-scanning alerts readable" 0
+          elif [ "$((hi+crit))" = "0" ]; then check "no open high/critical code-scanning alerts" 1
+          else check "open high/critical code alerts: $((hi+crit))" 0; fi
 
-          # policy pack + control matrix present on the checkout (default branch)
           [ "$(ls policies/*.md 2>/dev/null | wc -l)" -ge 20 ] && check "policy pack present (>=20)" 1 || check "policy pack present (>=20)" 0
           [ -f policies/controls.md ] && check "controls.md present" 1 || check "controls.md present" 0
 
           if [ "${#fails[@]}" -gt 0 ]; then
-            printf 'summary=%s control(s) regressed: %s\n' "${#fails[@]}" "$(IFS=';'; echo "${fails[*]}")" >> "$GITHUB_OUTPUT"
+            sm="${#fails[@]} control(s) regressed: $(IFS=';'; echo "${fails[*]}")"
+            { echo; echo "**Result: DRIFT — $sm**"; } >> "$REPORT"
+            echo "summary=$sm" >> "$GITHUB_OUTPUT"
             echo "DRIFT DETECTED: ${#fails[@]} regression(s)"; exit 1
           fi
+          { echo; echo "**Result: all monitored controls green**"; } >> "$REPORT"
           echo "summary=all monitored controls green" >> "$GITHUB_OUTPUT"
           echo "NO DRIFT — all monitored controls green"
 
-      - name: Open a drift ticket on regression
+      - name: Open a drift ticket on regression (deduped)
         if: failure() && steps.drift.outputs.summary != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SUMMARY: ${{ steps.drift.outputs.summary }}
         run: |
-          gh issue create --repo "${{ github.repository }}" --label shadow \
-            --title "Control drift detected $(date -u +%F)" \
-            --body "The daily deterministic monitor found a regression: ${{ steps.drift.outputs.summary }}. Investigate and restore the control through the change gate." || true
+          set +e
+          # dedup: reuse the existing open drift ticket instead of opening one daily
+          existing=$(gh issue list --repo "$REPO" --label shadow --state open --search "Control drift in:title" --json number --jq '.[0].number' 2>/dev/null)
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "Drift still present $(date -u +%F): $SUMMARY" >/dev/null 2>&1
+          else
+            gh issue create --repo "$REPO" --label shadow \
+              --title "Control drift detected" \
+              --body "The daily deterministic monitor found a regression: $SUMMARY. Investigate and restore the control through the change gate. This ticket is reused (commented) daily until the drift clears." >/dev/null 2>&1
+          fi
 
       # ---- Layer 2: bounded LLM enrichment (best-effort, never fails the job) ----
       - name: Install Claude Code
@@ -110,7 +130,7 @@ jobs:
           subset=""; for i in $(seq 0 $((take-1))); do idx=$(( (10#$doy * take + i) % n )); subset="$subset ${ALL[$idx]}"; done
           echo "today's subset:$subset"
           claude -p "You are the shadow verifier. For ONLY these criteria:$subset — read .shadow/criteria/<id>.md, run their non-MANUAL automated checks with gh, and note any that fail. Be terse. Do not modify files." \
-            --allowedTools "Bash(gh:*),Read,Glob,Grep" \
+            --allowedTools "Bash,Read,Glob,Grep" \
             --max-turns 15 || echo "LLM enrichment skipped/failed (non-blocking)"
 
       - name: Upload verify report

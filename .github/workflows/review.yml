@@ -70,28 +70,17 @@ jobs:
         run: |
           set -euo pipefail
           PROMPT="$(cat .shadow/agent/06-code-review.md)"
+          # Full Bash allowed: this is our own same-repo reviewer with the token; the
+          # narrow `Bash(gh:*)` allowlist blocked `gh` args with variable expansion /
+          # newlines, so the agent couldn't reliably read PR_NUMBER or post its heading.
           case "${{ steps.llm.outputs.cli }}" in
-            claude) claude -p "$PROMPT" --allowedTools "Bash(gh:*),Read,Glob,Grep" ;;
+            claude) claude -p "$PROMPT" --allowedTools "Bash,Read,Glob,Grep" ;;
             gemini) gemini -p "$PROMPT" ;;
             codex)  codex exec "$PROMPT" ;;
           esac
-
-      # Safety net: if the reviewer ran but didn't leave its marker (errored/timed
-      # out), post an honest one so the review-gate isn't deadlocked — while recording
-      # that automated review did not complete. Runs even if the step above failed.
-      - name: Ensure reviewer marker
-        if: ${{ always() && steps.llm.outputs.cli != '' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          have=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
-            --jq '[.[] | select(.body | contains("<!-- shadow-review -->"))] | length' 2>/dev/null || echo 0)
-          if [ "$have" = "0" ]; then
-            gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" -f body="<!-- shadow-review -->
-          ## Shadow Review
-          ⚠️ The reviewer agent did not post findings this run (it errored or timed out). This marker satisfies the reviewer-presence gate but records that automated review did not complete — re-run the review or review manually before relying on it." >/dev/null || true
-          fi
+          # NO fail-open marker safety-net: if the reviewer errors, it posts no marker
+          # and the review-gate blocks the merge (fail-CLOSED). A broken reviewer must
+          # stop merges, not wave them through — fix the reviewer, don't bypass it.
 
       - name: No reviewer configured (loud, not silent)
         if: steps.llm.outputs.cli == ''
