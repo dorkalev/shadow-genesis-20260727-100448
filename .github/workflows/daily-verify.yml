@@ -40,6 +40,9 @@ jobs:
         id: drift
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Admin-scoped fine-grained PAT (Administration:read, code-scanning:read,
+          # Dependabot alerts:read) for config-drift checks the GITHUB_TOKEN can't read.
+          ADMIN_TOKEN: ${{ secrets.SHADOW_ADMIN_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           # Own error handling (run EVERY check regardless); a single failing gh call
@@ -49,25 +52,33 @@ jobs:
           REPORT="shadow/verify-$(date -u +%F).md"
           mkdir -p shadow
           { echo "# Daily drift monitor — $(date -u +%FT%TZ)"; echo; } > "$REPORT"
-          fails=()
+          fails=(); unknowns=()
           check() { # $1=description  $2=1(ok)/0(fail)
             if [ "$2" = "1" ]; then echo "  ok   $1"; echo "- ok — $1" >> "$REPORT"
             else echo "  FAIL $1"; echo "- **FAIL** — $1" >> "$REPORT"; fails+=("$1"); fi
           }
-          # gh with a hard default on ANY failure (never let a failed call abort us)
-          ghq() { gh "$@" 2>/dev/null; }
+          unknown() { echo "  ??   $1"; echo "- _unknown_ — $1" >> "$REPORT"; unknowns+=("$1"); }
+          ghq() { gh "$@" 2>/dev/null; }                 # default token
+          ghadm() { GH_TOKEN="$ADMIN_TOKEN" gh "$@" 2>/dev/null; }   # admin PAT
 
-          # Only checks that work with the job's GITHUB_TOKEN (contents/security-events
-          # read). Admin-only config reads (code-scanning default-setup, vulnerability-
-          # alerts, security_and_analysis) are NOT checked here — they'd 403 with this
-          # token and false-alarm daily; the per-PR gate + LLM enrichment cover config drift.
-          rules=$(ghq api "repos/$REPO/rules/branches/main" --jq '[.[].type]'); [ -z "$rules" ] && rules="[]"
-          printf '%s' "$rules" | grep -q pull_request && check "main ruleset requires pull_request" 1 || check "main ruleset requires pull_request" 0
-          printf '%s' "$rules" | grep -q non_fast_forward && check "main ruleset blocks force-push" 1 || check "main ruleset blocks force-push" 0
-          printf '%s' "$rules" | grep -q deletion && check "main ruleset blocks deletion" 1 || check "main ruleset blocks deletion" 0
+          # --- change-management enforcement: the gate must be a REQUIRED status check
+          #     on BOTH rulesets (staging is every PR's base; main is production). We
+          #     inspect the required-check CONTEXTS, not just rule types — stripping the
+          #     compliance checks from a ruleset is the "classic silent failure".
+          for br in main staging; do
+            ctx=$(ghq api "repos/$REPO/rules/branches/$br" \
+              --jq '[.[] | select(.type=="required_status_checks") | .parameters.required_status_checks[].context]')
+            for want in compliance-audit compliance-review-gate; do
+              printf '%s' "$ctx" | grep -q "\"$want\"" \
+                && check "$br ruleset requires '$want' status check" 1 \
+                || check "$br ruleset requires '$want' status check" 0
+            done
+            types=$(ghq api "repos/$REPO/rules/branches/$br" --jq '[.[].type]'); [ -z "$types" ] && types="[]"
+            printf '%s' "$types" | grep -q pull_request && check "$br ruleset requires pull_request" 1 || check "$br ruleset requires pull_request" 0
+            printf '%s' "$types" | grep -q non_fast_forward && check "$br ruleset blocks force-push" 1 || check "$br ruleset blocks force-push" 0
+          done
 
-          # open high/critical code-scanning alerts — FAIL-CLOSED: a body that isn't a
-          # JSON array (403/empty) yields no numeric length, which we treat as a failure.
+          # open high/critical code-scanning alerts — FAIL-CLOSED (non-numeric = fail)
           hi=$(ghq api "repos/$REPO/code-scanning/alerts?state=open&severity=high" --jq 'length')
           crit=$(ghq api "repos/$REPO/code-scanning/alerts?state=open&severity=critical" --jq 'length')
           if ! printf '%s' "$hi" | grep -qE '^[0-9]+$' || ! printf '%s' "$crit" | grep -qE '^[0-9]+$'; then
@@ -75,9 +86,26 @@ jobs:
           elif [ "$((hi+crit))" = "0" ]; then check "no open high/critical code-scanning alerts" 1
           else check "open high/critical code alerts: $((hi+crit))" 0; fi
 
+          # --- security-config controls: need an admin token. With the PAT we CHECK them;
+          #     without it we report UNKNOWN (visible, never silently green, never a false
+          #     regression). This is the runbook's third verdict: unknown, reported, not a pass.
+          if [ -n "${ADMIN_TOKEN:-}" ]; then
+            st=$(ghadm api "repos/$REPO/code-scanning/default-setup" --jq '.state')
+            [ "$st" = "configured" ] && check "CodeQL default setup configured" 1 || check "CodeQL default setup configured (got: ${st:-error})" 0
+            code=$(ghadm api "repos/$REPO/vulnerability-alerts" -i | head -1 | grep -oE '[0-9]{3}' | head -1)
+            [ "$code" = "204" ] && check "Dependabot vulnerability alerts enabled" 1 || check "Dependabot vulnerability alerts enabled (got: ${code:-error})" 0
+            sec=$(ghadm api "repos/$REPO" --jq '.security_and_analysis.secret_scanning.status+"/"+.security_and_analysis.secret_scanning_push_protection.status')
+            [ "$sec" = "enabled/enabled" ] && check "secret scanning + push protection enabled" 1 || check "secret scanning + push protection enabled (got: ${sec:-error})" 0
+          else
+            unknown "CodeQL default setup — needs SHADOW_ADMIN_TOKEN (admin) to verify"
+            unknown "Dependabot vulnerability alerts — needs SHADOW_ADMIN_TOKEN to verify"
+            unknown "secret scanning + push protection — needs SHADOW_ADMIN_TOKEN to verify"
+          fi
+
           [ "$(ls policies/*.md 2>/dev/null | wc -l)" -ge 20 ] && check "policy pack present (>=20)" 1 || check "policy pack present (>=20)" 0
           [ -f policies/controls.md ] && check "controls.md present" 1 || check "controls.md present" 0
 
+          [ "${#unknowns[@]}" -gt 0 ] && { echo; echo "_${#unknowns[@]} check(s) unverifiable without an admin token._" >> "$REPORT"; }
           if [ "${#fails[@]}" -gt 0 ]; then
             sm="${#fails[@]} control(s) regressed: $(IFS=';'; echo "${fails[*]}")"
             { echo; echo "**Result: DRIFT — $sm**"; } >> "$REPORT"
