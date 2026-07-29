@@ -18,11 +18,11 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write
-  issues: write
+  contents: read          # read-only: nothing here writes the repo (least privilege)
+  issues: write           # only to open/append the drift ticket
   pull-requests: read
   checks: read
-  security-events: read
+  security-events: read   # read code-scanning alerts
 
 jobs:
   verify:
@@ -57,25 +57,21 @@ jobs:
           # gh with a hard default on ANY failure (never let a failed call abort us)
           ghq() { gh "$@" 2>/dev/null; }
 
+          # Only checks that work with the job's GITHUB_TOKEN (contents/security-events
+          # read). Admin-only config reads (code-scanning default-setup, vulnerability-
+          # alerts, security_and_analysis) are NOT checked here — they'd 403 with this
+          # token and false-alarm daily; the per-PR gate + LLM enrichment cover config drift.
           rules=$(ghq api "repos/$REPO/rules/branches/main" --jq '[.[].type]'); [ -z "$rules" ] && rules="[]"
           printf '%s' "$rules" | grep -q pull_request && check "main ruleset requires pull_request" 1 || check "main ruleset requires pull_request" 0
           printf '%s' "$rules" | grep -q non_fast_forward && check "main ruleset blocks force-push" 1 || check "main ruleset blocks force-push" 0
+          printf '%s' "$rules" | grep -q deletion && check "main ruleset blocks deletion" 1 || check "main ruleset blocks deletion" 0
 
-          state=$(ghq api "repos/$REPO/code-scanning/default-setup" --jq '.state')
-          [ "$state" = "configured" ] && check "CodeQL default setup configured" 1 || check "CodeQL default setup configured" 0
-
-          # vulnerability alerts: endpoint returns 204 (enabled) / 404 (disabled)
-          code=$(ghq api "repos/$REPO/vulnerability-alerts" -i | head -1 | grep -oE '[0-9]{3}' | head -1); [ -z "$code" ] && code="ERR"
-          [ "$code" = "204" ] && check "Dependabot vulnerability alerts enabled" 1 || check "Dependabot vulnerability alerts enabled (got: $code)" 0
-
-          sec=$(ghq api "repos/$REPO" --jq '.security_and_analysis.secret_scanning.status+"/"+.security_and_analysis.secret_scanning_push_protection.status')
-          [ "$sec" = "enabled/enabled" ] && check "secret scanning + push protection enabled" 1 || check "secret scanning + push protection enabled" 0
-
-          # open high/critical code-scanning alerts — FAIL-CLOSED: if the query can't be
-          # read (empty), treat as a failure, never as "0 alerts".
+          # open high/critical code-scanning alerts — FAIL-CLOSED: a body that isn't a
+          # JSON array (403/empty) yields no numeric length, which we treat as a failure.
           hi=$(ghq api "repos/$REPO/code-scanning/alerts?state=open&severity=high" --jq 'length')
           crit=$(ghq api "repos/$REPO/code-scanning/alerts?state=open&severity=critical" --jq 'length')
-          if [ -z "$hi" ] || [ -z "$crit" ]; then check "code-scanning alerts readable" 0
+          if ! printf '%s' "$hi" | grep -qE '^[0-9]+$' || ! printf '%s' "$crit" | grep -qE '^[0-9]+$'; then
+            check "code-scanning alerts readable (fail-closed)" 0
           elif [ "$((hi+crit))" = "0" ]; then check "no open high/critical code-scanning alerts" 1
           else check "open high/critical code alerts: $((hi+crit))" 0; fi
 
@@ -129,8 +125,10 @@ jobs:
           doy=$(date -u +%j); n=${#ALL[@]}; take=6
           subset=""; for i in $(seq 0 $((take-1))); do idx=$(( (10#$doy * take + i) % n )); subset="$subset ${ALL[$idx]}"; done
           echo "today's subset:$subset"
+          # read-only surface: gh (read APIs) + file reads, no arbitrary Bash — the
+          # enrichment only inspects and reports; it must not mutate anything.
           claude -p "You are the shadow verifier. For ONLY these criteria:$subset — read .shadow/criteria/<id>.md, run their non-MANUAL automated checks with gh, and note any that fail. Be terse. Do not modify files." \
-            --allowedTools "Bash,Read,Glob,Grep" \
+            --allowedTools "Bash(gh:*),Read,Glob,Grep" \
             --max-turns 15 || echo "LLM enrichment skipped/failed (non-blocking)"
 
       - name: Upload verify report
