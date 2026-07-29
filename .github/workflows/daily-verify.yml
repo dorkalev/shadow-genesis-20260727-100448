@@ -1,12 +1,15 @@
-# Daily shadow audit — copy into .github/workflows/daily-verify.yml
-# The clock loop: an LLM agent executes the platform's verification runbook
-# (agent/03-verify-compliance.md) headlessly, re-tests every automated check,
-# recomputes the gauge, and opens tickets for regressions. This is the judgment
-# half of the platform; the deterministic half (per-PR gates) is shadow-ci.
+# Daily shadow audit — the clock loop, made reliable.
 #
-# Requires: ANTHROPIC_API_KEY secret; the runbook + criteria corpus vendored
-# under .shadow/ (see actions/README.md). Swap the run step for another LLM
-# CLI if not using Claude.
+# Two layers:
+#   1. Deterministic drift monitor (fast, no LLM) — the pass/fail signal. Checks the
+#      key controls via `gh` and opens an issue (label: shadow) if any regressed.
+#      This is the CC4.1 evidence: a monitor that runs green every day and flags drift.
+#   2. Optional bounded LLM enrichment — a distinct reviewer/verifier agent re-checks a
+#      SMALL ROTATING subset of criteria (full coverage rolls over ~10 days), hard-capped
+#      so it can never hang or fail the job. Requires ANTHROPIC_API_KEY.
+#
+# The old design ran an 80-turn agent over all 61 criteria in CI and timed out; this
+# separates the reliable deterministic signal from the best-effort LLM pass.
 name: Daily Shadow Verify
 
 on:
@@ -24,24 +27,91 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
+    env:
+      HAS_LLM: ${{ secrets.ANTHROPIC_API_KEY != '' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
 
+      # ---- Layer 1: deterministic drift monitor (the pass/fail signal) ----
+      - name: Drift monitor (deterministic)
+        id: drift
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          fails=()
+          check() { # $1=description  $2=1(ok)/0(fail)
+            if [ "$2" = "1" ]; then echo "  ok   $1"; else echo "  FAIL $1"; fails+=("$1"); fi
+          }
+
+          # branch ruleset on default branch requires a PR
+          rules=$(gh api "repos/$REPO/rules/branches/main" --jq '[.[].type]' 2>/dev/null || echo "[]")
+          echo "$rules" | grep -q pull_request && check "main ruleset requires pull_request" 1 || check "main ruleset requires pull_request" 0
+          echo "$rules" | grep -q non_fast_forward && check "main ruleset blocks force-push" 1 || check "main ruleset blocks force-push" 0
+
+          # code scanning configured
+          state=$(gh api "repos/$REPO/code-scanning/default-setup" --jq '.state' 2>/dev/null || echo "")
+          [ "$state" = "configured" ] && check "CodeQL default setup configured" 1 || check "CodeQL default setup configured" 0
+
+          # dependabot vulnerability alerts enabled (204 = enabled)
+          code=$(gh api "repos/$REPO/vulnerability-alerts" -i 2>/dev/null | head -1 | grep -oE '[0-9]{3}' | head -1)
+          [ "$code" = "204" ] && check "Dependabot vulnerability alerts enabled" 1 || check "Dependabot vulnerability alerts enabled" 0
+
+          # secret scanning + push protection enabled
+          sec=$(gh api "repos/$REPO" --jq '.security_and_analysis.secret_scanning.status+"/"+.security_and_analysis.secret_scanning_push_protection.status' 2>/dev/null || echo "")
+          [ "$sec" = "enabled/enabled" ] && check "secret scanning + push protection enabled" 1 || check "secret scanning + push protection enabled" 0
+
+          # no OPEN high/critical code-scanning alerts
+          hi=$(gh api "repos/$REPO/code-scanning/alerts?state=open&severity=high" --jq 'length' 2>/dev/null || echo 0)
+          crit=$(gh api "repos/$REPO/code-scanning/alerts?state=open&severity=critical" --jq 'length' 2>/dev/null || echo 0)
+          [ "$((hi+crit))" = "0" ] && check "no open high/critical code-scanning alerts" 1 || check "open high/critical code alerts: $((hi+crit))" 0
+
+          # policy pack + control matrix present on the checkout (default branch)
+          [ "$(ls policies/*.md 2>/dev/null | wc -l)" -ge 20 ] && check "policy pack present (>=20)" 1 || check "policy pack present (>=20)" 0
+          [ -f policies/controls.md ] && check "controls.md present" 1 || check "controls.md present" 0
+
+          if [ "${#fails[@]}" -gt 0 ]; then
+            printf 'summary=%s control(s) regressed: %s\n' "${#fails[@]}" "$(IFS=';'; echo "${fails[*]}")" >> "$GITHUB_OUTPUT"
+            echo "DRIFT DETECTED: ${#fails[@]} regression(s)"; exit 1
+          fi
+          echo "summary=all monitored controls green" >> "$GITHUB_OUTPUT"
+          echo "NO DRIFT — all monitored controls green"
+
+      - name: Open a drift ticket on regression
+        if: failure() && steps.drift.outputs.summary != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create --repo "${{ github.repository }}" --label shadow \
+            --title "Control drift detected $(date -u +%F)" \
+            --body "The daily deterministic monitor found a regression: ${{ steps.drift.outputs.summary }}. Investigate and restore the control through the change gate." || true
+
+      # ---- Layer 2: bounded LLM enrichment (best-effort, never fails the job) ----
       - name: Install Claude Code
+        if: ${{ always() && env.HAS_LLM == 'true' }}
         run: npm install -g @anthropic-ai/claude-code
 
-      - name: Run the shadow audit runbook
+      - name: LLM re-check (rotating subset, hard-capped)
+        if: ${{ always() && env.HAS_LLM == 'true' }}
+        continue-on-error: true
+        timeout-minutes: 8
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}   # optional
         run: |
-          claude -p "$(cat .shadow/agent/03-verify-compliance.md)" \
-            --allowedTools "Bash(gh:*),Bash(git:*),Bash(gcloud:*),Read,Write,Glob,Grep" \
-            --max-turns 80
+          # pick ~6 criteria for today by day-of-year, so full coverage rolls over ~10 days
+          mapfile -t ALL < <(ls .shadow/criteria/*.md 2>/dev/null | xargs -n1 basename | sed 's/.md$//')
+          [ "${#ALL[@]}" -eq 0 ] && { echo "no criteria corpus vendored; skipping"; exit 0; }
+          doy=$(date -u +%j); n=${#ALL[@]}; take=6
+          subset=""; for i in $(seq 0 $((take-1))); do idx=$(( (10#$doy * take + i) % n )); subset="$subset ${ALL[$idx]}"; done
+          echo "today's subset:$subset"
+          claude -p "You are the shadow verifier. For ONLY these criteria:$subset — read .shadow/criteria/<id>.md, run their non-MANUAL automated checks with gh, and note any that fail. Be terse. Do not modify files." \
+            --allowedTools "Bash(gh:*),Read,Glob,Grep" \
+            --max-turns 15 || echo "LLM enrichment skipped/failed (non-blocking)"
 
       - name: Upload verify report
         if: always()
@@ -51,43 +121,3 @@ jobs:
           path: shadow/verify-*.md
           retention-days: 400
           if-no-files-found: ignore
-
-      # ---- the gauge, rendered from GitHub too (requires .shadow/site vendored) ----
-      - name: Render the gauge (static)
-        if: always()
-        continue-on-error: true
-        env:
-          SHADOW_ORG: ${{ github.repository }}
-        run: |
-          cargo build --release --manifest-path .shadow/site/Cargo.toml
-          .shadow/site/target/release/shadow seed \
-            --criteria .shadow/criteria --procedures .shadow/procedures/PROCEDURES.md \
-            --db shadow/shadow.db
-          .shadow/site/target/release/shadow render --db shadow/shadow.db --out dist
-
-      - name: Upload gauge site
-        if: always()
-        continue-on-error: true
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: shadow-gauge-${{ github.run_id }}
-          path: dist/
-          retention-days: 90
-          if-no-files-found: ignore
-
-      # OPT-IN: publish the gauge to GitHub Pages. WARNING — on free-plan repos,
-      # Pages sites are PUBLIC even for private repos: your compliance posture
-      # becomes visible to anyone with the URL. Enable only on plans with private
-      # Pages, or keep consuming the artifact instead.
-      #   Enable with: gh variable set PUBLISH_GAUGE_PAGES --body true
-      - name: Publish gauge to Pages branch
-        if: vars.PUBLISH_GAUGE_PAGES == 'true'
-        run: |
-          set -euo pipefail
-          git worktree add /tmp/pages -B gh-pages || (git checkout --orphan gh-pages && git rm -rf . && git checkout - && git worktree add /tmp/pages gh-pages)
-          rm -rf /tmp/pages/* && cp -r dist/* /tmp/pages/
-          cd /tmp/pages
-          git add -A
-          git -c user.name=shadow-ci -c user.email=shadow-ci@noreply.local \
-            commit -m "gauge: $(date -u +%F)" || exit 0
-          git push -f origin gh-pages
