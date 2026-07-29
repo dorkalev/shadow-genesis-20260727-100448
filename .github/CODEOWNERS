@@ -1,0 +1,9 @@
+# Code owners (CC6.8, CC8.1). Every path requires the owner's review on a PR.
+# On this solo AI-agent team the owner is the human signer; an independent
+# reviewer agent reviews the diff and the signer approves by merging. To make
+# GitHub's required-code-owner-review enforceable, the reviewer agent needs its
+# own GitHub identity (App/bot) added here — see policies/ai-agent-use.md.
+*                       @dorkalev
+/policies/               @dorkalev
+/.github/                @dorkalev
+/app/                    @dorkalev

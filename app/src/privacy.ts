@@ -41,6 +41,36 @@ export function assembleExport(
   return { subject_id, generated_at: now, subject, consent, readings, disclosures };
 }
 
+// P5.1 — requester identity verification: a DSAR (export/erase) must prove the
+// requester is the data subject before any personal data is returned or deleted.
+// The subject holds a per-subject verification secret (set at consent time); the
+// requester presents it. Mismatch, missing, or no-secret-on-file all DENY with a
+// machine-readable reason (the denial path an auditor looks for). Pure + testable.
+export interface VerifyResult { ok: boolean; reason: string; }
+export function verifyRequester(
+  provided: string | undefined, expected: string | undefined,
+): VerifyResult {
+  if (!expected) return { ok: false, reason: "no_verification_on_file" };
+  if (!provided) return { ok: false, reason: "missing_credential" };
+  // constant-time-ish compare: equal length + char accumulation (avoid early-exit leak)
+  if (provided.length !== expected.length) return { ok: false, reason: "credential_mismatch" };
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= provided.charCodeAt(i) ^ expected.charCodeAt(i);
+  return diff === 0 ? { ok: true, reason: "verified" } : { ok: false, reason: "credential_mismatch" };
+}
+
+// P5.1 — a DSAR log entry: every access/erasure request is recorded with its
+// outcome (fulfilled/denied) and reason, for the accounting an auditor tests.
+export interface DsarLogEntry {
+  subject_id: string; action: "export" | "erase"; outcome: "fulfilled" | "denied";
+  reason: string; at: string;
+}
+export function dsarLogEntry(
+  subject_id: string, action: "export" | "erase", v: VerifyResult, at: string,
+): DsarLogEntry {
+  return { subject_id, action, outcome: v.ok ? "fulfilled" : "denied", reason: v.reason, at };
+}
+
 // P4.2 — retention: a record is expired if older than its purpose's retention window.
 export const RETENTION_DAYS: Record<Purpose, number> = { service_operation: 365, product_analytics: 180 };
 export function isExpired(recordIso: string, purpose: Purpose, nowMs: number): boolean {
