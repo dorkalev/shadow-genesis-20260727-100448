@@ -1,4 +1,5 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import { Firestore } from "@google-cloud/firestore";
 import { validate, integrityHash, canonical, summarize, Reading } from "./pi";
 import { Consent, hasActiveConsent, minimize, assembleExport, isFullyErased, NOTICE_VERSION, Purpose, verifyRequester, dsarLogEntry } from "./privacy";
@@ -6,6 +7,13 @@ import { Consent, hasActiveConsent, minimize, assembleExport, isFullyErased, NOT
 const db = new Firestore(); // ADC from the Cloud Run runtime SA (datastore.user)
 const app = express();
 app.use(express.json({ limit: "16kb" }));
+
+// Rate limiting (availability / abuse protection). A global cap on every route,
+// plus a stricter cap on the sensitive DSAR endpoints (export/erase) which read
+// or delete personal data. CodeQL flags routes without a recognized limiter.
+const globalLimiter = rateLimit({ windowMs: 60_000, max: 120, standardHeaders: true, legacyHeaders: false });
+const dsarLimiter = rateLimit({ windowMs: 60_000, max: 10, standardHeaders: true, legacyHeaders: false });
+app.use(globalLimiter);
 
 // health — the uptime check hits this
 app.get("/", (_req, res) => res.json({ service: "measurements", status: "ok" }));
@@ -74,7 +82,7 @@ app.delete("/subjects/:id/consent", async (req, res) => {
 // Requester identity is verified first: the caller must present the subject's
 // verification secret (x-verification-token). Failures are DENIED (403) with a
 // reason, and every request — fulfilled or denied — is written to the DSAR log.
-app.get("/subjects/:id/export", async (req, res) => {
+app.get("/subjects/:id/export", dsarLimiter, async (req, res) => {
   const id = req.params.id;
   const subj = await db.collection("subjects").doc(id).get();
   const expected = subj.exists ? (subj.data() as any)?.verification_token as string | undefined : undefined;
@@ -100,7 +108,7 @@ app.put("/subjects/:id", async (req, res) => {
 
 // P4.3 — erasure (right to be forgotten); verified complete via an export check.
 // Same identity verification + DSAR log as export — erasure is irreversible.
-app.delete("/subjects/:id", async (req, res) => {
+app.delete("/subjects/:id", dsarLimiter, async (req, res) => {
   const id = req.params.id;
   const subjDoc = await db.collection("subjects").doc(id).get();
   const expected = subjDoc.exists ? (subjDoc.data() as any)?.verification_token as string | undefined : undefined;
