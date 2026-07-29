@@ -1,0 +1,11 @@
+# Asset / media disposal log (CC6.5)
+# Records secure disposal of assets and media holding Internal/Confidential data.
+last_reviewed: 2026-07-29
+owner: dorkalev
+disposals: []   # none this period
+policy: >
+  Cloud data is disposed by deletion + retention expiry (data-retention.md); Google Cloud
+  handles physical media sanitization for the underlying infrastructure (see
+  evidence/vendors/gcp-review-2026.md). Endpoints use full-disk encryption, so a wiped/lost
+  device is cryptographically unrecoverable. No removable media is used
+  (policies/data-handling.md). Any future device disposal is recorded above with method + date.
