@@ -70,11 +70,12 @@ jobs:
         run: |
           set -euo pipefail
           PROMPT="$(cat .shadow/agent/06-code-review.md)"
-          # Full Bash allowed: this is our own same-repo reviewer with the token; the
-          # narrow `Bash(gh:*)` allowlist blocked `gh` args with variable expansion /
-          # newlines, so the agent couldn't reliably read PR_NUMBER or post its heading.
+          # SCOPED allowlist — NOT unrestricted Bash. The reviewer reads an attacker-
+          # controlled diff, so it must not be able to run arbitrary shell (prompt-
+          # injection → RCE with the token). gh + git + reads cover every command the
+          # runbook needs (post review comments, read the diff); PR_NUMBER is in env.
           case "${{ steps.llm.outputs.cli }}" in
-            claude) claude -p "$PROMPT" --allowedTools "Bash,Read,Glob,Grep" ;;
+            claude) claude -p "$PROMPT" --allowedTools "Bash(gh:*),Bash(git:*),Read,Glob,Grep" ;;
             gemini) gemini -p "$PROMPT" ;;
             codex)  codex exec "$PROMPT" ;;
           esac
