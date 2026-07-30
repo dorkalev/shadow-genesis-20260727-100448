@@ -137,6 +137,8 @@ jobs:
       # ---- Layer 2: bounded LLM enrichment (best-effort, never fails the job) ----
       - name: Install Claude Code
         if: ${{ always() && env.HAS_LLM == 'true' }}
+        continue-on-error: true   # best-effort: an npm blip must not redden the daily
+        timeout-minutes: 3        # evidence signal (the enrichment tolerates a missing CLI)
         run: npm install -g @anthropic-ai/claude-code
 
       - name: LLM re-check (rotating subset, hard-capped)
