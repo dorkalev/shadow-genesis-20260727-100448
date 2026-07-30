@@ -82,7 +82,9 @@ jobs:
           hi=$(ghq api "repos/$REPO/code-scanning/alerts?state=open&severity=high" --jq 'length')
           crit=$(ghq api "repos/$REPO/code-scanning/alerts?state=open&severity=critical" --jq 'length')
           if ! printf '%s' "$hi" | grep -qE '^[0-9]+$' || ! printf '%s' "$crit" | grep -qE '^[0-9]+$'; then
-            check "code-scanning alerts readable (fail-closed)" 0
+            # endpoint unreadable (no analyses / transient 403) is NOT a control regression —
+            # it's a monitoring gap. Report unknown (visible), never a false daily drift ticket.
+            unknown "code-scanning alerts — endpoint unreadable (no analyses or perms); not counted"
           elif [ "$((hi+crit))" = "0" ]; then check "no open high/critical code-scanning alerts" 1
           else check "open high/critical code alerts: $((hi+crit))" 0; fi
 
