@@ -70,10 +70,13 @@ jobs:
         run: |
           set -euo pipefail
           PROMPT="$(cat .shadow/agent/06-code-review.md)"
-          # SCOPED allowlist — NOT unrestricted Bash. The reviewer reads an attacker-
-          # controlled diff, so it must not be able to run arbitrary shell (prompt-
-          # injection → RCE with the token). gh + git + reads cover every command the
-          # runbook needs (post review comments, read the diff); PR_NUMBER is in env.
+          # The ACTUAL trust boundary is the job-level guard: same-repo PRs only, and
+          # fork PRs never receive secrets (see the job `if:` above) — so an
+          # attacker-controlled diff from a fork can't reach this token. The scoped
+          # allowlist (gh + git + reads, no unrestricted Bash) is DEFENSE-IN-DEPTH, not a
+          # hard sandbox: `Bash(gh:*)` narrows the surface but is not RCE-proof against a
+          # determined prompt injection, and the GITHUB_TOKEN here is limited to
+          # pull-requests:write (no admin). Do NOT widen this to full `Bash`.
           case "${{ steps.llm.outputs.cli }}" in
             claude) claude -p "$PROMPT" --allowedTools "Bash(gh:*),Bash(git:*),Read,Glob,Grep" ;;
             gemini) gemini -p "$PROMPT" ;;
