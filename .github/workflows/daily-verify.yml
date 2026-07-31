@@ -102,11 +102,13 @@ jobs:
             else unknown "CodeQL default setup — admin token cannot read (missing scope/expired)"; fi
 
             # -i keeps the status line even on non-2xx; 204=enabled, 404=disabled(FAIL), else unknown
+            # 204 = unambiguously enabled (pass). 404 is AMBIGUOUS — GitHub returns it both
+            # when alerts are disabled AND when the token lacks the scope to see them — so we
+            # never treat it as a regression; only a confirmed-enabled 204 is a pass.
             hdr=$(A api "repos/$REPO/vulnerability-alerts" -i); code=$(printf '%s' "$hdr" | head -1 | grep -oE '[0-9]{3}' | head -1)
             case "${code:-none}" in
               204) check "Dependabot vulnerability alerts enabled" 1 ;;
-              404) check "Dependabot vulnerability alerts DISABLED" 0 ;;
-              *)   unknown "Dependabot vulnerability alerts — admin token cannot read (HTTP ${code:-none})" ;;
+              *)   unknown "Dependabot vulnerability alerts — HTTP ${code:-none} (404 is ambiguous: disabled OR token under-scoped); not counted" ;;
             esac
 
             if sec=$(A api "repos/$REPO" --jq '.security_and_analysis.secret_scanning.status+"/"+.security_and_analysis.secret_scanning_push_protection.status') \
