@@ -113,15 +113,17 @@ jobs:
           HAS_OPENAI: ${{ secrets.OPENAI_API_KEY != '' }}
         run: |
           set -euo pipefail
+          # emit only the CLI NAME — never a command string with shell metacharacters
+          # (an unquoted `--allowedTools Bash(gh:*)` interpolation crashes the shell).
           if [ "$HAS_ANTHROPIC" = "true" ]; then
             npm install -g @anthropic-ai/claude-code
-            echo 'runner=claude --allowedTools Bash(gh:*),Bash(git:*),Read,Write,Glob,Grep -p' >> "$GITHUB_OUTPUT"
+            echo 'cli=claude' >> "$GITHUB_OUTPUT"
           elif [ "$HAS_GEMINI" = "true" ]; then
             npm install -g @google/gemini-cli
-            echo 'runner=gemini -p' >> "$GITHUB_OUTPUT"
+            echo 'cli=gemini' >> "$GITHUB_OUTPUT"
           elif [ "$HAS_OPENAI" = "true" ]; then
             npm install -g @openai/codex
-            echo 'runner=codex exec' >> "$GITHUB_OUTPUT"
+            echo 'cli=codex' >> "$GITHUB_OUTPUT"
           else
             echo "no LLM key configured (ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY)" >&2
             exit 1
@@ -139,7 +141,13 @@ jobs:
           RITUAL: ${{ steps.route.outputs.ritual }}
           ISSUE_NUMBER: ${{ steps.route.outputs.issue }}
         run: |
-          ${{ steps.llm.outputs.runner }} "$(cat .shadow/agent/05-async-interviews.md)"
+          set -euo pipefail
+          PROMPT="$(cat .shadow/agent/05-async-interviews.md)"
+          case "${{ steps.llm.outputs.cli }}" in
+            claude) claude -p "$PROMPT" --allowedTools "Bash(gh:*),Bash(git:*),Read,Write,Glob,Grep" ;;
+            gemini) gemini -p "$PROMPT" ;;
+            codex)  codex exec "$PROMPT" ;;
+          esac
 
       - name: Annual kickoffs
         if: steps.route.outputs.mode == 'annual'
@@ -152,6 +160,11 @@ jobs:
           MODE: kickoff
         run: |
           set -euo pipefail
+          PROMPT="$(cat .shadow/agent/05-async-interviews.md)"
           for r in ritual-risks ritual-vendors ritual-policies ritual-tabletop; do
-            RITUAL="$r" ${{ steps.llm.outputs.runner }} "$(cat .shadow/agent/05-async-interviews.md)"
+            case "${{ steps.llm.outputs.cli }}" in
+              claude) RITUAL="$r" claude -p "$PROMPT" --allowedTools "Bash(gh:*),Bash(git:*),Read,Write,Glob,Grep" ;;
+              gemini) RITUAL="$r" gemini -p "$PROMPT" ;;
+              codex)  RITUAL="$r" codex exec "$PROMPT" ;;
+            esac
           done
