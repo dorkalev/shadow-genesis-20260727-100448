@@ -111,10 +111,20 @@ jobs:
               *)   unknown "Dependabot vulnerability alerts — HTTP ${code:-none} (404 is ambiguous: disabled OR token under-scoped); not counted" ;;
             esac
 
-            if sec=$(A api "repos/$REPO" --jq '.security_and_analysis.secret_scanning.status+"/"+.security_and_analysis.secret_scanning_push_protection.status') \
-               && [ -n "$sec" ] && ! has "$sec" null; then
-              [ "$sec" = "enabled/enabled" ] && check "secret scanning + push protection enabled" 1 || check "secret scanning + push protection: $sec" 0
-            else unknown "secret scanning — admin token cannot read security_and_analysis (needs Administration:read)"; fi
+            # GET /repos returns 200 even without Administration:read — it just OMITS the
+            # security_and_analysis block. So exit-code success is not enough; we must
+            # confirm the block is actually present. Absent block (jq → "null") = unknown,
+            # NOT a fail (an under-scoped PAT must never read as a control regression).
+            sa=$(A api "repos/$REPO" --jq '.security_and_analysis // "ABSENT"')
+            if [ -z "$sa" ] || [ "$sa" = "ABSENT" ] || [ "$sa" = "null" ]; then
+              unknown "secret scanning — security_and_analysis not visible (token lacks Administration:read)"
+            else
+              ss=$(printf '%s' "$sa" | jq -r '.secret_scanning.status // "absent"' 2>/dev/null)
+              pp=$(printf '%s' "$sa" | jq -r '.secret_scanning_push_protection.status // "absent"' 2>/dev/null)
+              if [ "$ss" = "absent" ] || [ "$pp" = "absent" ]; then unknown "secret scanning — status fields absent (token scope)"
+              elif [ "$ss/$pp" = "enabled/enabled" ]; then check "secret scanning + push protection enabled" 1
+              else check "secret scanning + push protection: $ss/$pp" 0; fi
+            fi
           fi
 
           # --- local artifacts (always readable on the checkout)
