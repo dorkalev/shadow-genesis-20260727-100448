@@ -146,6 +146,25 @@ fn import_verify(db_path: &str, report_path: &str) {
     println!("imported deterministic checks; gauge {gauge:.1}%");
 }
 
+#[cfg(test)]
+mod verify_import_tests {
+    use super::*;
+
+    #[test]
+    fn deterministic_checks_map_only_to_owned_criteria() {
+        assert_eq!(criteria_for_verify_check("github.org_2fa_required"), ["CC6.1", "CC6.2"]);
+        assert_eq!(criteria_for_verify_check("github.branch_protection.main"), ["CC8.1"]);
+        assert!(criteria_for_verify_check("unknown").is_empty());
+    }
+
+    #[test]
+    fn unknown_verdicts_never_receive_credit() {
+        assert_eq!(criterion_status("pass"), Some(("verified", 1.0, 1)));
+        assert_eq!(criterion_status("unknown"), Some(("not_started", 0.0, 2)));
+        assert_eq!(criterion_status("n/a"), None);
+    }
+}
+
 // ---------- seeding: the markdown corpus is the source of truth ----------
 
 fn frontmatter_value(fm: &str, key: &str) -> Option<String> {
