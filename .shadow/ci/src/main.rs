@@ -15,6 +15,7 @@ mod attest;
 mod check;
 mod rituals;
 mod util;
+mod verify;
 
 fn main() {
     let cmd = std::env::args().nth(1).unwrap_or_default();
@@ -25,8 +26,9 @@ fn main() {
         "mgmt-packet" => rituals::run_mgmt_packet(),
         "release-record" => rituals::run_release_record(),
         "attest" => attest::run_attest(),
+        "verify" => verify::run_verify(),
         _ => {
-            eprintln!("usage: shadow-ci <check|archive|access-review|mgmt-packet|release-record|attest>");
+            eprintln!("usage: shadow-ci <check|archive|access-review|mgmt-packet|release-record|attest|verify>");
             eprintln!("  check    per-PR compliance audit   (env: REPO, PR_NUMBER, TICKET_PATTERN, REVIEW_PHASE,");
             eprintln!("           CONFIDENCE_THRESHOLD, REQUIRED_REVIEWERS, EXPECTED_REVIEWERS, TEST_EXCLUDE_PATHS, LINEAR_API_KEY)");
             eprintln!("  archive  post-merge evidence record (env: REPO, PR_NUMBER, TICKET_PATTERN, ARCHIVES_BRANCH,");
