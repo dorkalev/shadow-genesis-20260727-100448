@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload verify report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: shadow-verify-${{ github.run_id }}
           path: shadow/verify-*.md
@@ -76,7 +76,7 @@ jobs:
       - name: Upload gauge site
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: shadow-gauge-${{ github.run_id }}
           path: dist/
