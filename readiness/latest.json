@@ -1,0 +1,613 @@
+{
+  "checks": [
+    {
+      "criteria": [
+        "CC6.1",
+        "CC6.2"
+      ],
+      "dimension": "technical",
+      "evidence": "repository is user-owned; account MFA requires attestation",
+      "expires_at": null,
+      "id": "github.org_2fa_required",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "org-2fa",
+      "source": "github:repos/dorkalev/shadow-genesis-20260727-100448",
+      "verdict": "n/a"
+    },
+    {
+      "criteria": [
+        "CC8.1",
+        "CC6.3"
+      ],
+      "dimension": "technical",
+      "evidence": "branch protection endpoint is configured",
+      "expires_at": null,
+      "id": "github.branch_protection.main",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "branch-rulesets",
+      "source": "github:repos/dorkalev/shadow-genesis-20260727-100448/branches/main/protection",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC8.1",
+        "CC6.3"
+      ],
+      "dimension": "technical",
+      "evidence": "branch is not protected",
+      "expires_at": null,
+      "id": "github.branch_protection.staging",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "branch-rulesets",
+      "source": "github:repos/dorkalev/shadow-genesis-20260727-100448/branches/staging/protection",
+      "verdict": "fail"
+    },
+    {
+      "criteria": [
+        "CC7.1"
+      ],
+      "dimension": "technical",
+      "evidence": "no open findings",
+      "expires_at": null,
+      "id": "github.open_dependabot_alerts",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "dependabot",
+      "source": "github:repos/dorkalev/shadow-genesis-20260727-100448/dependabot/alerts",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC7.1"
+      ],
+      "dimension": "technical",
+      "evidence": "no open findings",
+      "expires_at": null,
+      "id": "github.open_code_scanning_alerts",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "codeql",
+      "source": "github:repos/dorkalev/shadow-genesis-20260727-100448/code-scanning/alerts",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC6.1",
+        "CC7.1"
+      ],
+      "dimension": "technical",
+      "evidence": "no open findings",
+      "expires_at": null,
+      "id": "github.open_secret_scanning_alerts",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "secret-scanning",
+      "source": "github:repos/dorkalev/shadow-genesis-20260727-100448/secret-scanning/alerts",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC8.1"
+      ],
+      "dimension": "design",
+      "evidence": ".github/pull_request_template.md contains all required sections",
+      "expires_at": null,
+      "id": "repo.pr_template",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "pr-template",
+      "source": "repo:.github/pull_request_template.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC8.1"
+      ],
+      "dimension": "design",
+      "evidence": "required artifact exists: ./.github/workflows/ci.yml",
+      "expires_at": null,
+      "id": "repo.ci_workflow",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "ci-tests",
+      "source": "repo:./.github/workflows/ci.yml",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC8.1",
+        "CC4.1"
+      ],
+      "dimension": "design",
+      "evidence": "required artifact exists: ./.github/workflows/compliance.yml",
+      "expires_at": null,
+      "id": "repo.compliance_gate",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "compliance-audit-agent",
+      "source": "repo:./.github/workflows/compliance.yml",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC8.1",
+        "CC4.1"
+      ],
+      "dimension": "design",
+      "evidence": "required artifact exists: ./.github/workflows/review.yml",
+      "expires_at": null,
+      "id": "repo.review_gate",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "compliance-review-gate",
+      "source": "repo:./.github/workflows/review.yml",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC8.1",
+        "CC4.1",
+        "CC2.1"
+      ],
+      "dimension": "design",
+      "evidence": "required artifact exists: ./.github/workflows/post-merge-archive.yml",
+      "expires_at": null,
+      "id": "repo.post_merge_archive",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "post-merge-archive",
+      "source": "repo:./.github/workflows/post-merge-archive.yml",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC4.1"
+      ],
+      "dimension": "design",
+      "evidence": "required artifact exists: ./.github/workflows/deterministic-dashboard.yml",
+      "expires_at": null,
+      "id": "repo.daily_verify",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "daily-verify",
+      "source": "repo:./.github/workflows/deterministic-dashboard.yml",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC6.2",
+        "CC6.3",
+        "CC1.2",
+        "CC4.2"
+      ],
+      "dimension": "design",
+      "evidence": "required artifact exists: ./.github/workflows/quarterly-rituals.yml",
+      "expires_at": null,
+      "id": "repo.quarterly_rituals",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "quarterly-access-review",
+      "source": "repo:./.github/workflows/quarterly-rituals.yml",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC5.3",
+        "CC1.1",
+        "CC2.2"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./policies/README.md",
+      "expires_at": null,
+      "id": "evidence.policy_canon",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "policies-repo",
+      "source": "repo:./policies/README.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC3.1",
+        "CC3.2",
+        "CC3.3",
+        "CC3.4",
+        "CC9.1"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./policies/risk-register.md",
+      "expires_at": null,
+      "id": "evidence.risk_register",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "risk-register",
+      "source": "repo:./policies/risk-register.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC9.2",
+        "P6.4",
+        "P6.5"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./policies/vendor-register.md",
+      "expires_at": null,
+      "id": "evidence.vendor_register",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "vendor-register",
+      "source": "repo:./policies/vendor-register.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC6.2",
+        "CC6.3"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./policies/access-register.md",
+      "expires_at": null,
+      "id": "evidence.access_register",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "access-register",
+      "source": "repo:./policies/access-register.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC6.2",
+        "CC1.4"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./runbooks/onboarding.md",
+      "expires_at": null,
+      "id": "repo.onboarding_runbook",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "onboard-offboard",
+      "source": "repo:./runbooks/onboarding.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC6.2",
+        "CC1.4"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./runbooks/offboarding.md",
+      "expires_at": null,
+      "id": "repo.offboarding_runbook",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "onboard-offboard",
+      "source": "repo:./runbooks/offboarding.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC7.3",
+        "CC7.4",
+        "CC7.5"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./runbooks/incident-response.md",
+      "expires_at": null,
+      "id": "repo.incident_runbook",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "incident-runbook",
+      "source": "repo:./runbooks/incident-response.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC8.1",
+        "CC7.4"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./runbooks/hotfix.md",
+      "expires_at": null,
+      "id": "repo.hotfix_runbook",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "hotfix-runbook",
+      "source": "repo:./runbooks/hotfix.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC8.1",
+        "CC6.3",
+        "CC9.2"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./policies/ai-agent-use.md",
+      "expires_at": null,
+      "id": "repo.ai_policy",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "ai-policy",
+      "source": "repo:./policies/ai-agent-use.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC2.1",
+        "CC2.2",
+        "CC2.3"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./SYSTEM-DESCRIPTION.md",
+      "expires_at": null,
+      "id": "evidence.system_description",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": null,
+      "source": "repo:./SYSTEM-DESCRIPTION.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "C1.1",
+        "P3.1",
+        "P4.1"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./compliance/data-inventory.yaml",
+      "expires_at": null,
+      "id": "evidence.data_inventory",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": null,
+      "source": "repo:./compliance/data-inventory.yaml",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "P1.1",
+        "P2.1"
+      ],
+      "dimension": "design",
+      "evidence": "approved control document is present: ./app/PRIVACY-NOTICE.md",
+      "expires_at": null,
+      "id": "evidence.privacy_notice",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": null,
+      "source": "repo:./app/PRIVACY-NOTICE.md",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "P2.1",
+        "P3.1",
+        "P3.2",
+        "P4.2",
+        "P4.3",
+        "P5.1",
+        "P5.2",
+        "PI1.2",
+        "PI1.4",
+        "PI1.5"
+      ],
+      "dimension": "design",
+      "evidence": "required artifact exists: ./app/test/privacy.test.ts",
+      "expires_at": null,
+      "id": "repo.privacy_tests",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": null,
+      "source": "repo:./app/test/privacy.test.ts",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC5.2",
+        "CC8.1"
+      ],
+      "dimension": "design",
+      "evidence": "required artifact exists: ./firebase.json",
+      "expires_at": null,
+      "id": "firebase.configuration",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": null,
+      "source": "repo:./firebase.json",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC6.1",
+        "CC6.3",
+        "C1.1"
+      ],
+      "dimension": "design",
+      "evidence": "Firestore rules are versioned and do not contain an unconditional allow",
+      "expires_at": null,
+      "id": "firebase.firestore_rules",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": null,
+      "source": "repo:firestore.rules",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC6.1",
+        "CC6.3",
+        "CC8.1"
+      ],
+      "dimension": "design",
+      "evidence": "none of the required artifacts exist: test/firestore.rules.test.ts, tests/firestore.rules.test.ts, functions/test/firestore.rules.test.ts",
+      "expires_at": null,
+      "id": "firebase.rules_tests",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "ci-tests",
+      "source": "repository",
+      "verdict": "fail"
+    },
+    {
+      "criteria": [
+        "CC6.1",
+        "CC6.3",
+        "CC8.1"
+      ],
+      "dimension": "design",
+      "evidence": "cannot read .github/workflows/deploy.yml: No such file or directory (os error 2)",
+      "expires_at": null,
+      "id": "gcp.keyless_deploy",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "ci-tests",
+      "source": "repo:.github/workflows/deploy.yml",
+      "verdict": "fail"
+    },
+    {
+      "criteria": [
+        "CC7.1",
+        "CC8.1"
+      ],
+      "dimension": "design",
+      "evidence": "none of the required artifacts exist: package-lock.json, pnpm-lock.yaml, yarn.lock, Cargo.lock",
+      "expires_at": null,
+      "id": "repo.dependency_lock",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "dependabot",
+      "source": "repository",
+      "verdict": "fail"
+    },
+    {
+      "criteria": [
+        "A1.3"
+      ],
+      "dimension": "operating",
+      "evidence": "restore-test evidence exists",
+      "expires_at": null,
+      "id": "evidence.restore_test",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "restore-test",
+      "source": "repo:evidence",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC6.2",
+        "CC6.3"
+      ],
+      "dimension": "operating",
+      "evidence": "access-review evidence exists",
+      "expires_at": null,
+      "id": "evidence.access_review",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "quarterly-access-review",
+      "source": "repo:evidence",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC1.2",
+        "CC4.2"
+      ],
+      "dimension": "operating",
+      "evidence": "management-review evidence exists",
+      "expires_at": null,
+      "id": "evidence.management_review",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "quarterly-mgmt-review",
+      "source": "repo:evidence",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "CC7.5",
+        "CC3.1"
+      ],
+      "dimension": "operating",
+      "evidence": "tabletop evidence exists",
+      "expires_at": null,
+      "id": "evidence.tabletop",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "annual-rituals",
+      "source": "repo:evidence",
+      "verdict": "pass"
+    },
+    {
+      "criteria": [
+        "A1.2"
+      ],
+      "dimension": "technical",
+      "evidence": "gcloud firestore databases describe --project shadow-dk-246464 --format=json failed: ERROR: (gcloud.firestore.databases.describe) You do not currently have an active account selected.\nPlease run:\n\n  $ gcloud auth login\n\nto obtain new credentials.\n\nIf you have already logged in with a different account, run:\n\n  $ gcloud config set account ACCOUNT\n\nto select an already authenticated account to use.\n",
+      "expires_at": null,
+      "id": "gcp.firestore_pitr.shadow-dk-246464",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "backups-pitr",
+      "source": "gcp:shadow-dk-246464:firestore",
+      "verdict": "unknown"
+    },
+    {
+      "criteria": [
+        "A1.2"
+      ],
+      "dimension": "technical",
+      "evidence": "Firestore delete protection enabled=false",
+      "expires_at": null,
+      "id": "gcp.firestore_delete_protection.shadow-dk-246464",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "backups-pitr",
+      "source": "gcp:shadow-dk-246464:firestore",
+      "verdict": "unknown"
+    },
+    {
+      "criteria": [
+        "CC7.2",
+        "A1.1"
+      ],
+      "dimension": "technical",
+      "evidence": "gcloud monitoring uptime list-configs --project shadow-dk-246464 --format=json failed: ERROR: (gcloud.monitoring.uptime.list-configs) You do not currently have an active account selected.\nPlease run:\n\n  $ gcloud auth login\n\nto obtain new credentials.\n\nIf you have already logged in with a different account, run:\n\n  $ gcloud config set account ACCOUNT\n\nto select an already authenticated account to use.\n",
+      "expires_at": null,
+      "id": "gcp.uptime_alerting.shadow-dk-246464",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "uptime-alerting",
+      "source": "gcp:shadow-dk-246464:monitoring",
+      "verdict": "unknown"
+    },
+    {
+      "criteria": [
+        "CC7.2",
+        "CC2.1"
+      ],
+      "dimension": "technical",
+      "evidence": "gcloud logging read logName:\"cloudaudit.googleapis.com\" --project shadow-dk-246464 --limit=1 --format=json failed: ERROR: (gcloud.logging.read) You do not currently have an active account selected.\nPlease run:\n\n  $ gcloud auth login\n\nto obtain new credentials.\n\nIf you have already logged in with a different account, run:\n\n  $ gcloud config set account ACCOUNT\n\nto select an already authenticated account to use.\n",
+      "expires_at": null,
+      "id": "gcp.audit_activity.shadow-dk-246464",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "audit-logging",
+      "source": "gcp:shadow-dk-246464:logging",
+      "verdict": "unknown"
+    },
+    {
+      "criteria": [
+        "CC6.2",
+        "CC6.3"
+      ],
+      "dimension": "technical",
+      "evidence": "gcloud projects get-iam-policy shadow-dk-246464 --format=json failed: ERROR: (gcloud.projects.get-iam-policy) You do not currently have an active account selected.\nPlease run:\n\n  $ gcloud auth login\n\nto obtain new credentials.\n\nIf you have already logged in with a different account, run:\n\n  $ gcloud config set account ACCOUNT\n\nto select an already authenticated account to use.\n",
+      "expires_at": null,
+      "id": "gcp.primitive_iam_bindings.shadow-dk-246464",
+      "observed_at": "2026-08-05T09:02:31Z",
+      "procedure_id": "access-register",
+      "source": "gcp:shadow-dk-246464:iam",
+      "verdict": "unknown"
+    }
+  ],
+  "failures": 4,
+  "observed_at": "2026-08-05T09:02:31Z",
+  "schema_version": 2,
+  "subject": {
+    "gcp_projects": [
+      "shadow-dk-246464"
+    ],
+    "repository": "dorkalev/shadow-genesis-20260727-100448"
+  },
+  "summary": {
+    "criteria_with_evidence": 40,
+    "criteria_with_operating_evidence": 10,
+    "dimensions": {
+      "design": {
+        "fail": 3,
+        "pass": 22,
+        "percent": 88.0,
+        "unknown": 0
+      },
+      "operating": {
+        "fail": 0,
+        "pass": 4,
+        "percent": 100.0,
+        "unknown": 0
+      },
+      "technical": {
+        "fail": 1,
+        "pass": 4,
+        "percent": 40.0,
+        "unknown": 5
+      }
+    }
+  },
+  "unknowns": 5
+}
