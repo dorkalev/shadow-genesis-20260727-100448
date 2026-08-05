@@ -205,7 +205,7 @@ fn readiness_cards(r: &Readiness) -> String {
     let items = [
         ("Design readiness", r.design, "documented controls"),
         ("Technical health", r.technical, "live automated checks"),
-        ("Evidence coverage", r.evidence, "criteria with current proof"),
+        ("Observation coverage", r.evidence, "checks with a known verdict"),
         ("Operating maturity", r.operating, "controls proven in operation"),
     ];
     let mut s = String::from(r#"<div class="readiness" aria-label="readiness dimensions">"#);
@@ -268,9 +268,9 @@ const MAP: &[MapItem] = &[
     },
     MapItem::Station {
         label: "Branch + draft PR",
-        note: "{TICKET-ID}-slug off staging; the PR is the audit artifact from minute one",
+        note: "{TICKET-ID}-slug off main; the PR is the audit artifact from minute one",
         crit: "CC8.1",
-        pins: &["staging-topology", "pr-template"],
+        pins: &["main-topology", "pr-template"],
     },
     MapItem::Station {
         label: "Spec on ticket",
@@ -288,29 +288,35 @@ const MAP: &[MapItem] = &[
         label: "Gates",
         note: "required checks — merging is impossible until all are green; the general controls over technology, deployed",
         crit: "CC8.1 · CC4.1 · CC5.1 · CC5.2",
-        pins: &["ci-tests", "review-bot", "compliance-audit-agent", "compliance-review-gate"],
+        pins: &["ci-tests", "compliance-audit-agent", "compliance-review-gate"],
     },
     MapItem::Station {
-        label: "Merge to staging",
-        note: "protected; a bypass is never forbidden, only detected and billed",
+        label: "Optional advisory review",
+        note: "off by default; a deliberately invoked model review may supplement the deterministic gates, but never satisfies one",
+        crit: "CC8.1 · CC7.1",
+        pins: &["review-bot"],
+    },
+    MapItem::Station {
+        label: "Merge to main",
+        note: "protected production trunk; the founder's authenticated merge is the approval of record",
         crit: "CC8.1 · CC6.3",
         pins: &["branch-rulesets"],
     },
     MapItem::Station {
         label: "Archive",
-        note: "JSON+MD evidence per merged PR, on its own branch, forever",
+        note: "JSON+MD evidence per merged PR on a protected, tamper-evident branch",
         crit: "CC8.1 · CC2.1",
         pins: &["post-merge-archive", "bypass-detection", "archives-branch", "slack-webhook"],
     },
     MapItem::Station {
-        label: "Release → main",
-        note: "fast-forward only, human-confirmed, with a release record and ticket",
+        label: "Deploy + release record",
+        note: "keyless deploy of the merged SHA/digest, with a founder-confirmed record and ticket",
         crit: "CC8.1",
         pins: &[],
     },
     MapItem::Station {
         label: "Hotfix (emergency valve)",
-        note: "direct push to main is allowed but billed: incident ticket + backport PR back through the gates; an undocumented bypass is the loudest alarm the shadow has",
+        note: "an authorized emergency bypass is billed: incident ticket + remediation PR through normal gates; an undocumented bypass is the loudest alarm the shadow has",
         crit: "CC8.1 · CC7.4",
         pins: &["hotfix-runbook"],
     },
