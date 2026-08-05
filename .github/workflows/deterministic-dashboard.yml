@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   security-events: read
 
 jobs:
@@ -30,6 +30,8 @@ jobs:
           SHADOW_ROOT: .
           SHADOW_BRANCHES: main,staging
           GCP_PROJECTS: shadow-dk-246464
+          ARCHIVES_PUSH: "1"
+          ARCHIVES_BRANCH: compliance-archives
         run: .shadow/ci/target/release/shadow-ci verify
       - name: Render dashboard snapshot
         run: |
