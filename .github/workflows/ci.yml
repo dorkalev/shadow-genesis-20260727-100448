@@ -22,6 +22,12 @@ jobs:
             .shadow/ci
             .shadow/site
 
+      - name: Set up Java 21 for the Firestore emulator
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
       - name: Test the deterministic control plane
         run: cargo test --manifest-path .shadow/ci/Cargo.toml --locked
 
