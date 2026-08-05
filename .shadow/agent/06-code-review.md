@@ -49,7 +49,7 @@ so post only what you would block a merge over.
    by the marker the compliance gate uses to know you showed up. Find an existing
    comment containing the marker and PATCH it; otherwise POST:
    ```
-   <!-- shadow-review -->
+   <!-- shadow-review:complete -->
    ## Shadow Review
    {N critical · N major · N minor — or "no blocking findings"}
    Critical/Major threads block the merge: fix and resolve each, or reply with a

@@ -1,16 +1,18 @@
 # Network / endpoint exposure inventory (CC6.6, CC6.1)
 # Every externally-reachable entry point and its protection. Reviewed annually / on change.
-last_reviewed: 2026-07-29
+last_reviewed: 2026-08-05
 owner: dorkalev
 endpoints:
   - name: measurements-api
     service: Cloud Run `app` (us-central1)
     exposure: public HTTPS (managed TLS 1.3; HTTP→HTTPS redirect)
-    auth: per-route — DSAR export/erase require x-verification-token; writes require Idempotency-Key
+    auth: public health/docs only; data routes require a revocation-checked Firebase ID token; subject routes require matching uid/email; erasure requires recent authentication
     rate_limiting: express-rate-limit (global 120/min; DSAR 10/min)
     data_class: Confidential
-    protections: [tls_1_3, rate_limiting, input_validation, least_privilege_runtime_sa]
+    protections: [managed_tls, firebase_auth, token_revocation_check, subject_authorization, recent_auth_for_erasure, rate_limiting, input_validation, least_privilege_runtime_sa, security_headers]
 surface_notes: >
   Serverless only. Compute Engine, Cloud SQL, and Cloud Scheduler APIs are disabled — there
   is no VM/firewall/VPC attack surface to manage. No public storage buckets. Ingress is the
-  single Cloud Run service above; egress limited to Firestore + LLM provider (Public/Internal).
+  single Cloud Run service above; runtime egress is limited to Firebase identity verification,
+  Firestore, and managed logging. Optional CI model review is disabled by default and is not
+  part of the production request path.

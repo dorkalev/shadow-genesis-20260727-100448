@@ -22,7 +22,7 @@ How data is handled across its lifecycle, by classification. Complements
 |---|---|---|---|
 | Store in git | yes | yes (no secrets) | never (secrets to secret manager / CI secrets) |
 | Send to an LLM vendor | yes | yes | no (see `ai-agent-use.md`) |
-| Encryption at rest / transit | yes | yes | required (GCP default CMEK + TLS) |
+| Encryption at rest / transit | yes | yes | required (Google-managed encryption at rest + managed TLS; use CMEK only if separately configured and evidenced) |
 | Access | all | team | least-privilege, logged |
 
 ## Removable media

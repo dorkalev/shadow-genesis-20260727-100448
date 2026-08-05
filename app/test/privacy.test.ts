@@ -1,4 +1,4 @@
-import { hasActiveConsent, minimize, assembleExport, isFullyErased, isExpired, Consent, verifyRequester, dsarLogEntry } from "../src/privacy";
+import { hasActiveConsent, minimize, assembleExport, isFullyErased, isExpired, Consent, dsarLogEntry } from "../src/privacy";
 import assert from "node:assert";
 import { test } from "node:test";
 
@@ -25,17 +25,9 @@ test("P4.2 retention window expires old records per purpose", () => {
   assert.equal(isExpired("2026-06-01T00:00:00Z", "service_operation", now), false); // 30d < 365
   assert.equal(isExpired("2025-01-01T00:00:00Z", "product_analytics", now), true);  // >180d
 });
-test("P5.1 DSAR requester identity is verified before any personal data is released", () => {
-  assert.equal(verifyRequester("secret", "secret").ok, true);                 // subject proves identity
-  assert.equal(verifyRequester("wrong", "secret").reason, "credential_mismatch");
-  assert.equal(verifyRequester(undefined, "secret").reason, "missing_credential");
-  assert.equal(verifyRequester("secret", undefined).reason, "no_verification_on_file"); // deny by default
-  // length-mismatch must not early-exit into a false accept
-  assert.equal(verifyRequester("s", "secret").ok, false);
-});
 test("P5.1 every DSAR request is logged with outcome + reason", () => {
-  const denied = dsarLogEntry("a@b.co", "export", verifyRequester("x", "secret"), "2026-07-29T00:00:00Z");
-  assert.deepEqual([denied.outcome, denied.reason], ["denied", "credential_mismatch"]);
-  const ok = dsarLogEntry("a@b.co", "erase", verifyRequester("secret", "secret"), "2026-07-29T00:00:00Z");
+  const denied = dsarLogEntry("a@b.co", "export", { ok: false, reason: "subject_access_denied" }, "2026-07-29T00:00:00Z");
+  assert.deepEqual([denied.outcome, denied.reason], ["denied", "subject_access_denied"]);
+  const ok = dsarLogEntry("a@b.co", "erase", { ok: true, reason: "recent_firebase_auth" }, "2026-07-29T00:00:00Z");
   assert.deepEqual([ok.outcome, ok.action], ["fulfilled", "erase"]);
 });

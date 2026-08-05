@@ -21,6 +21,7 @@ concurrency:
 
 jobs:
   deploy:
+    environment: production
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -41,16 +42,22 @@ jobs:
           gcloud auth configure-docker "${{ vars.GCP_REGION }}-docker.pkg.dev" --quiet
           docker build -t "$IMAGE" app
           docker push "$IMAGE"
-          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+          DIGEST=$(gcloud artifacts docker images describe "$IMAGE" --format='value(image_summary.digest)')
+          if [ -z "$DIGEST" ]; then
+            echo "::error::could not resolve the pushed image digest"
+            exit 1
+          fi
+          IMAGE_DIGEST="${IMAGE%:*}@$DIGEST"
+          echo "IMAGE_DIGEST=$IMAGE_DIGEST" >> "$GITHUB_ENV"
 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy "${{ vars.GCP_SERVICE }}" \
             --project "${{ vars.GCP_PROJECT_ID }}" \
-            --image "$IMAGE" \
+            --image "$IMAGE_DIGEST" \
             --region "${{ vars.GCP_REGION }}" \
             --quiet
 
       - name: Record the deployment
         run: |
-          echo "Deployed \`$IMAGE\` from \`${GITHUB_SHA}\` (run ${{ github.run_id }})" >> "$GITHUB_STEP_SUMMARY"
+          echo "Deployed \`$IMAGE_DIGEST\` from \`${GITHUB_SHA}\` (run ${{ github.run_id }})" >> "$GITHUB_STEP_SUMMARY"

@@ -2,6 +2,12 @@
 
 **Purpose:** reference service demonstrating processing integrity end to end.
 
+**Security boundary:** every data route requires a revocation-checked Firebase
+ID token. Subject routes additionally require the token uid or verified email to
+match the subject; destructive erasure requires authentication within 15 minutes.
+Public access is limited to health, API documentation, the privacy notice, and
+rate-limited complaint intake.
+
 **Data definition (a Reading):** `device_id` (1–64 chars `[A-Za-z0-9_-]`), `metric` (temperature|humidity|pressure), `value` (finite number, within documented plausibility bounds per metric), `observed_at` (ISO-8601 UTC; server-assigned if absent).
 
 **Processing specification:**

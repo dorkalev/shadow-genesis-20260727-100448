@@ -6,7 +6,7 @@
 
 **Method:** each risk to the objectives is rated likelihood × impact (1–4) with a treatment and owner. The full living register is `policies/risk-register.md` (8 risks: key-person, credential compromise, dependency vuln, data loss, vendor outage/breach, unauthorized change, **fraud/insider misuse (CC3.3)**, data mishandling).
 
-**Fraud consideration (CC3.3):** insider misuse of the owner's concentrated access and payment/credential fraud were explicitly assessed (register R7). Mitigations: least privilege, complete authenticated audit trail, no self-approval on changes, code of conduct, and immutable archives that make tampering evident.
+**Fraud consideration (CC3.3):** insider misuse of the owner's concentrated access and payment/credential fraud were explicitly assessed (register R7). No human segregation is claimed. Mitigations are least privilege, required machine gates, complete authenticated audit trails, protected archives, periodic reconciliation, and external CPA scrutiny; residual single-person risk is accepted.
 
 **Change-driven reassessment (CC3.4):** adopting a new vendor, a new data type, or an architecture change triggers re-analysis before the change ships.
 

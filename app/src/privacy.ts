@@ -41,23 +41,9 @@ export function assembleExport(
   return { subject_id, generated_at: now, subject, consent, readings, disclosures };
 }
 
-// P5.1 — requester identity verification: a DSAR (export/erase) must prove the
-// requester is the data subject before any personal data is returned or deleted.
-// The subject holds a per-subject verification secret (set at consent time); the
-// requester presents it. Mismatch, missing, or no-secret-on-file all DENY with a
-// machine-readable reason (the denial path an auditor looks for). Pure + testable.
+// P5.1 — DSAR request outcomes. Identity is verified with a revocation-checked
+// Firebase ID token in auth.ts; no reusable plaintext per-subject secret is stored.
 export interface VerifyResult { ok: boolean; reason: string; }
-export function verifyRequester(
-  provided: string | undefined, expected: string | undefined,
-): VerifyResult {
-  if (!expected) return { ok: false, reason: "no_verification_on_file" };
-  if (!provided) return { ok: false, reason: "missing_credential" };
-  // constant-time-ish compare: equal length + char accumulation (avoid early-exit leak)
-  if (provided.length !== expected.length) return { ok: false, reason: "credential_mismatch" };
-  let diff = 0;
-  for (let i = 0; i < expected.length; i++) diff |= provided.charCodeAt(i) ^ expected.charCodeAt(i);
-  return diff === 0 ? { ok: true, reason: "verified" } : { ok: false, reason: "credential_mismatch" };
-}
 
 // P5.1 — a DSAR log entry: every access/erasure request is recorded with its
 // outcome (fulfilled/denied) and reason, for the accounting an auditor tests.

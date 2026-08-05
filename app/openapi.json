@@ -1,13 +1,76 @@
-{ "openapi": "3.0.3", "info": { "title": "Measurements", "version": "1.0.0",
-  "description": "Processing-integrity reference service (PI1.1 data definitions + processing specs)." },
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Shadow Genesis Measurements",
+    "version": "1.1.0",
+    "description": "Reference API. Data routes require a revocation-checked Firebase ID token. Security and Availability are the readiness scope."
+  },
+  "components": {
+    "securitySchemes": {
+      "firebaseBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Firebase ID token",
+        "description": "Firebase ID token in Authorization: Bearer <token>."
+      }
+    },
+    "schemas": {
+      "Reading": {
+        "type": "object",
+        "required": ["device_id", "metric", "value"],
+        "properties": {
+          "device_id": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,64}$" },
+          "metric": { "type": "string", "enum": ["temperature", "humidity", "pressure"] },
+          "value": { "type": "number" },
+          "observed_at": { "type": "string", "format": "date-time" },
+          "subject_id": { "type": "string", "format": "email" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
   "paths": {
-    "/readings": { "post": { "summary": "Ingest a reading (validated, idempotent, integrity-hashed)",
-      "parameters": [{ "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string" } }],
-      "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Reading" } } } },
-      "responses": { "201": { "description": "stored" }, "200": { "description": "idempotent replay" }, "422": { "description": "validation errors" } } } },
-    "/readings/{device_id}/summary": { "get": { "summary": "Integrity-checked aggregate (PI1.4)",
-      "responses": { "200": { "description": "summary with integrity_ok flag" } } } } },
-  "components": { "schemas": { "Reading": { "type": "object", "required": ["device_id","metric","value"],
-    "properties": { "device_id": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,64}$" },
-      "metric": { "type": "string", "enum": ["temperature","humidity","pressure"] },
-      "value": { "type": "number" }, "observed_at": { "type": "string", "format": "date-time" } } } } } }
+    "/": {
+      "get": { "summary": "Public health check", "responses": { "200": { "description": "healthy" } } }
+    },
+    "/readings": {
+      "post": {
+        "summary": "Validate and idempotently store a reading",
+        "security": [{ "firebaseBearer": [] }],
+        "parameters": [{ "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string", "minLength": 8, "maxLength": 128 } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Reading" } } } },
+        "responses": {
+          "201": { "description": "stored" },
+          "200": { "description": "idempotent replay" },
+          "401": { "description": "invalid or missing Firebase token" },
+          "403": { "description": "subject mismatch or active consent required" },
+          "422": { "description": "validation errors" }
+        }
+      }
+    },
+    "/readings/{device_id}/summary": {
+      "get": {
+        "summary": "Return an integrity-checked aggregate",
+        "security": [{ "firebaseBearer": [] }],
+        "parameters": [{ "name": "device_id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "summary" }, "401": { "description": "authentication required" } }
+      }
+    },
+    "/subjects/{id}/export": {
+      "get": {
+        "summary": "Export the authenticated subject's data",
+        "security": [{ "firebaseBearer": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "subject export" }, "401": { "description": "authentication required" }, "403": { "description": "subject mismatch" } }
+      }
+    },
+    "/subjects/{id}": {
+      "delete": {
+        "summary": "Erase the authenticated subject after recent reauthentication",
+        "security": [{ "firebaseBearer": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "erased" }, "401": { "description": "authentication required" }, "403": { "description": "subject mismatch or recent authentication required" } }
+      }
+    }
+  }
+}

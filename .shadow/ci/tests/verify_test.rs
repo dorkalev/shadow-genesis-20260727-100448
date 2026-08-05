@@ -9,5 +9,7 @@ fn deterministic_verifier_requires_an_explicit_repository() {
         .output()
         .expect("run shadow-ci verify");
     assert!(!output.status.success());
-    assert!(String::from_utf8_lossy(&output.stderr).contains("REPO or GITHUB_REPOSITORY is required"));
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("REPO or GITHUB_REPOSITORY is required")
+    );
 }

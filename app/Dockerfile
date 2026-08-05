@@ -11,6 +11,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=build /app/dist ./dist
 COPY openapi.json ./openapi.json
+COPY PRIVACY-NOTICE.md ./PRIVACY-NOTICE.md
 USER node
 EXPOSE 8080
 CMD ["node","dist/server.js"]

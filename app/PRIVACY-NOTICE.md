@@ -5,6 +5,9 @@
 **Why (purposes, P1/P3):** `service_operation` (running the service) and, only with your explicit consent, `product_analytics`.
 **Legal basis / consent (P2):** we process personal data only under an active, per-purpose consent, which you may withdraw at any time (`DELETE /subjects/{id}/consent`).
 **Your rights (P5):** access/export (`GET /subjects/{id}/export`), correction (`PUT /subjects/{id}`), and erasure (`DELETE /subjects/{id}`).
+These routes verify a non-revoked Firebase ID token and require it to belong to
+the requested subject; erasure also requires recent reauthentication. We do not
+store a reusable plaintext DSAR verification secret.
 **Retention (P4.2):** service_operation data 365 days, analytics 180 days, then deleted; erasure on request is immediate.
 **Disclosures (P6):** we log any disclosure of your data; request an accounting via `GET /subjects/{id}/disclosures`. We do not sell personal data.
 **Breach (P6.6):** on a personal-data breach we notify affected subjects and regulators per our Incident Response Plan.

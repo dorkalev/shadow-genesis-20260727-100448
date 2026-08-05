@@ -12,7 +12,7 @@ Annual review of our primary sub-processor (infrastructure, datastore, logging, 
 | **DPA** | Google Cloud Data Processing Addendum in force (`cloud.google.com/terms/data-processing-addendum`). |
 | Breach notification | Per Google Cloud DPA — Google notifies without undue delay on a personal-data breach. |
 | Sub-processors | Google publishes its sub-processor list; no additional action required. |
-| Encryption | At rest (default CMEK) + in transit (TLS) — verified on Cloud Run (TLS 1.3, HTTP→HTTPS 302). |
+| Encryption | Google-managed encryption at rest and managed HTTPS in transit. No customer-managed key is claimed for this demo. |
 | Region / residency | Configured in `provision/`. |
 
 **Assessment:** Google Cloud's independent attestations cover the controls we rely on

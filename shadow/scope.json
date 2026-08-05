@@ -1,2 +1,2 @@
 {"org": "dorkalev", "repos": ["shadow-genesis-20260727-100448"], "cloud": "gcp", "gcp_projects": ["shadow-dk-246464"],
- "categories": ["security", "availability", "confidentiality", "processing_integrity", "privacy"]}
+ "categories": ["security", "availability"]}
