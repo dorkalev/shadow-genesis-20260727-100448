@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, staging]
+  push:
+    branches: [main, staging]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          workspaces: |
+            .shadow/ci
+            .shadow/site
+
+      - name: Test the deterministic control plane
+        run: cargo test --manifest-path .shadow/ci/Cargo.toml --locked
+
+      - name: Test the dashboard importer and renderer
+        run: cargo test --manifest-path .shadow/site/Cargo.toml --locked
+
+      - name: Test the application and privacy controls
+        working-directory: app
+        run: |
+          npm ci
+          npm test

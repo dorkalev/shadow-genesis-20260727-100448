@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   security-events: read
 
 jobs:
@@ -15,22 +15,29 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: Swatinem/rust-cache@v2
       - name: Build deterministic verifier and dashboard
         run: |
           cargo build --release --manifest-path .shadow/ci/Cargo.toml
           cargo build --release --manifest-path .shadow/site/Cargo.toml
-      - name: Verify live GitHub controls
+      - name: Verify repository, GitHub, and configured cloud controls
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.ORG_READ_TOKEN || secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-          SHADOW_BRANCHES: main
+          SHADOW_ROOT: .
+          SHADOW_BRANCHES: main,staging
+          GCP_PROJECTS: shadow-dk-246464
+          ARCHIVES_PUSH: "1"
+          ARCHIVES_BRANCH: compliance-archives
         run: .shadow/ci/target/release/shadow-ci verify
       - name: Render dashboard snapshot
         run: |
           .shadow/site/target/release/shadow seed --criteria .shadow/criteria --procedures .shadow/procedures/PROCEDURES.md --db shadow/shadow.db
-          .shadow/site/target/release/shadow import-verify --db shadow/shadow.db --report shadow/verify-$(date -u +%F).json
+          .shadow/site/target/release/shadow apply-scope --db shadow/shadow.db --scope shadow/scope.json
+          .shadow/site/target/release/shadow import-verify --db shadow/shadow.db --report shadow/readiness-latest.json
           .shadow/site/target/release/shadow render --db shadow/shadow.db --out dist
       - name: Upload dashboard and verification evidence
         uses: actions/upload-artifact@v4
@@ -39,4 +46,6 @@ jobs:
           path: |
             dist/
             shadow/verify-*.json
+            shadow/readiness-*.json
+            shadow/shadow.db
           retention-days: 90
