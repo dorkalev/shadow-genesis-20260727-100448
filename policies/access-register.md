@@ -1,6 +1,6 @@
 ---
 owner: dorkalev
-version: 1.1
+version: 1.2
 approved_by: dorkalev
 approved_at: 2026-08-05
 review_by: 2026-10-01
@@ -15,12 +15,18 @@ quarterly against live GitHub/Firebase/GCP state and file the result under
 
 | Person | GitHub | GCP/Firebase | SaaS | MFA | Accountable role |
 |---|---|---|---|---|---|
-| dorkalev | repository owner/admin | project administrator | vendor administrator | required; evidence reviewed separately | Sole Owner/Founder |
+| dorkalev | repository owner/admin | project administrator through explicit predefined roles; no primitive Owner/Editor | vendor administrator | required; evidence reviewed separately | Sole Owner/Founder |
 
 The single administrator concentration is disclosed and risk-accepted. Primitive
 GCP Owner/Editor bindings are not an acceptable steady-state shortcut; the live
 verifier reports them as failures until replaced with explicit administrative
 roles and emergency recovery is documented.
+
+The current founder grant set is: Project IAM Admin, Firebase Admin, Cloud Run
+Admin, Artifact Registry Administrator, Service Account Admin, IAM Workload
+Identity Pool Admin, Service Usage Admin, Monitoring Admin, Logs Configuration
+Writer, Logs Viewer, and Private Logs Viewer. This is one human administrator,
+not separation of duties; the concentration remains disclosed and risk-accepted.
 
 ## Machine access
 
