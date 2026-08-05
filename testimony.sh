@@ -7,10 +7,10 @@
 #   ./testimony.sh --since 2026-01-01 --file          also commit the report to compliance-archives
 #
 # This is what the CPA's fieldwork does, run against GitHub's own records:
-# population from three independent sources (merged-PR API, git history,
+# population from three reconciled GitHub records (merged-PR API, main history,
 # archive records), completeness reconciliation, then 100% attribute testing —
-# authorized (ticket PRECEDES the change), independently reviewed, gated
-# (no bypass), documented, via staging. Exit 0 = no exceptions; exit 1 = the
+# authorized (ticket PRECEDES the change), founder approval recorded, gated
+# (no bypass), documented, via protected main. Exit 0 = no exceptions; exit 1 = the
 # honest exception list.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)"

@@ -35,7 +35,7 @@ jobs:
           GH_TOKEN: ${{ secrets.ORG_READ_TOKEN || secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           SHADOW_ROOT: .
-          SHADOW_BRANCHES: main,staging
+          SHADOW_BRANCHES: main
           GCP_PROJECTS: shadow-dk-246464
           ARCHIVES_PUSH: "1"
           ARCHIVES_BRANCH: compliance-archives

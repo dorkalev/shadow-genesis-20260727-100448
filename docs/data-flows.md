@@ -2,11 +2,11 @@
 
 Where data enters, rests, and leaves the system — including flows to LLM providers.
 Complements `../compliance/data-inventory.yaml` and `../inventory/systems.md`.
-_Last reviewed: 2026-07-29 · Owner: dorkalev_
+_Last reviewed: 2026-08-05 · Owner: dorkalev_
 
 ## Primary application flow
 ```
-client ──TLS──> Cloud Run (measurements service)
+client ──TLS + Firebase ID token──> Cloud Run (measurements service)
                      │  validate → idempotent write (transaction) → SHA-256 integrity hash
                      ▼
                 Firestore (readings, subjects, consent, disclosures, complaints)
@@ -14,9 +14,9 @@ client ──TLS──> Cloud Run (measurements service)
                      ▼
                 Firestore backups (GCP, same project)
 ```
-- **In:** client requests over TLS. Personal data only via the privacy endpoints (subjects).
-- **At rest:** Firestore, encrypted (CMEK). Backups encrypted.
-- **Out (customer):** DSAR export returns a subject's own data after identity verification.
+- **In:** public health/docs require no identity; every data route verifies a non-revoked Firebase ID token. Subject routes require token uid/email ownership.
+- **At rest:** Firestore and backups use Google-managed encryption. No claim of customer-managed encryption is made.
+- **Out (customer):** DSAR export returns only the authenticated subject's data; erasure additionally requires recent authentication.
 
 ## Observability flow
 ```
@@ -26,17 +26,19 @@ uptime checks ──> alert policy "app down" ──> owner
 
 ## AI-provider (LLM) flow
 ```
-developer / CI review agent ──> LLM provider API
+developer / optional review agent ──> LLM provider API
    payload: source diffs + repo context (Public/Internal only)
    NEVER: customer personal data, secrets, Confidential data
    controls: policies/ai-agent-use.md; zero-retention/no-train setting where offered
 ```
-LLM providers are sub-processors (see `data-inventory.yaml → sub_processors`), covered by DPAs
-in `../evidence/vendors/`. Fork-PR diffs never reach an agent holding secrets (`review.yml`).
+Model review is disabled by default and is not part of the daily verifier, merge,
+deploy, or production runtime. If enabled, the selected vendor is reviewed and
+recorded before use. Fork-PR diffs never receive model secrets (`review.yml`).
 
 ## CI/CD flow
 ```
-PR ──> gate + reviewer agent ──> human signer merges ──> keyless deploy (WIF) ──> Cloud Run
+PR to main ──> deterministic gates ──> founder merges ──> keyless digest deploy (WIF) ──> Cloud Run
 merge ──> compliance-archives record (tickets, reviewers, checks)
 ```
-No long-lived cloud keys cross this boundary; deploy identity is federated (WIF).
+The founder may be author and merger; no independent person is claimed. No
+long-lived cloud key crosses the boundary; the deploy identity is federated.

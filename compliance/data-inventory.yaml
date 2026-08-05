@@ -1,8 +1,8 @@
 # Machine-readable data inventory (CC6.7, C1.1, P-series).
 # What personal / customer data we hold, where, why, how long, and who it flows to.
 # Reviewed at least annually and on significant change.
-version: 1.0
-last_reviewed: 2026-07-29
+version: 1.1
+last_reviewed: 2026-08-05
 owner: dorkalev
 
 data_categories:
@@ -12,12 +12,12 @@ data_categories:
     store: Firestore collection `readings` (shadow-dk-246464)
     purpose: Processing-integrity demo — validated, idempotent, hash-verified readings
     retention: per policies/data-retention.md
-    encryption: at rest (GCP CMEK) + in transit (TLS)
+    encryption: at rest (Google-managed encryption) + in transit (managed TLS)
 
   - name: subjects
     classification: Confidential
     contains_personal_data: true
-    fields: [subject_id, contact, consent_state]
+    fields: [subject_id, display_name, consent_state]
     store: Firestore collection `subjects`
     purpose: Privacy demo — consent, DSAR (export/correct/erase)
     retention: until erasure request or retention expiry (data-retention.md)
@@ -45,9 +45,9 @@ sub_processors:
     role: source control, CI/CD
     dpa: yes (GitHub DPA / GitHub terms) — see evidence/vendors/
     data: source code, no customer personal data
-  - name: LLM provider (Anthropic/Google/OpenAI — first configured key)
-    role: code review / agent
+  - name: Optional LLM provider (only when deliberately enabled)
+    role: advisory development/review tool; not a production subservice
     dpa: required; zero-retention / no-train setting where offered
-    data: Public/Internal only — never Confidential (see policies/ai-agent-use.md)
+    data: Public/Internal source context only — never Confidential; daily verifier and gates make no model call
 
 data_flows_doc: ../docs/data-flows.md

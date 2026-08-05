@@ -3,12 +3,12 @@
 # Two phases, mirroring the audit/review-gate split:
 #   audit        — runs immediately; tickets + traceability + tests. Bot reviews expected, not required.
 #   review-gate  — same checks plus required reviewers and unresolved-findings gate.
-# Register BOTH job names as required status checks on the staging ruleset.
+# Register BOTH job names as required status checks on the main ruleset.
 name: Shadow Compliance
 
 on:
   pull_request:
-    branches: [staging, main]
+    branches: [main]
     types: [opened, synchronize, reopened, ready_for_review, edited, labeled, unlabeled]
 
 concurrency:
@@ -34,7 +34,7 @@ jobs:
             key: review-gate
     name: compliance-${{ matrix.key }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           fetch-depth: 0
 
@@ -54,15 +54,17 @@ jobs:
           # ---- tune per repo ----
           TICKET_PATTERN: "[A-Z]{2,6}-[0-9]+|#[0-9]+"   # Linear/Jira ids and GitHub issue refs
           CONFIDENCE_THRESHOLD: "70"
-          EXPECTED_REVIEWERS: "shadow-reviewer"   # audit phase: noted if absent, not blocking
-          REQUIRED_REVIEWERS: "shadow-reviewer"   # review-gate phase: blocking. Set to a third-party bot login if one is installed
+          # Solo-founder default: no fictional second person and no paid model
+          # call in the required merge path. Enable these only intentionally.
+          EXPECTED_REVIEWERS: ""
+          REQUIRED_REVIEWERS: ""
           TEST_EXCLUDE_PATHS: ""             # csv of path prefixes exempt from test coverage
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}  # optional; omit to skip ticket verification
         run: .shadow/ci/target/release/shadow-ci check
 
       - name: Upload report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: compliance-report-${{ matrix.key }}-${{ github.event.pull_request.number }}
           path: compliance_report.json

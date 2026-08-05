@@ -1,34 +1,33 @@
-# DSAR Runbook — Access / Correction / Erasure (P5.1, P5.2, P4.3, P6.7)
+# DSAR Runbook — Access / Correction / Erasure
 
-How a data-subject-access request (access/export, correction, erasure) is handled, with
-identity verification, SLAs, and the denial path.
+## Intake and identity
 
-## Intake
-Requests arrive via the channel published in `app/PRIVACY-NOTICE.md`. Log the request date.
+Requests arrive through the published privacy channel. The data API verifies a
+non-revoked Firebase ID token and requires its uid or verified email to match
+the requested subject before returning or changing data. Erasure additionally
+requires `auth_time` within 15 minutes. Missing/invalid tokens return 401;
+authenticated subject mismatches and stale destructive authorization return
+403. Never bypass these checks based on an email or reusable shared secret.
 
-## 1. Verify the requester (mandatory, before any data is released)
-The requester must present the subject's verification secret (`x-verification-token`).
-`app/src/privacy.ts:verifyRequester` compares it constant-time and **denies by default**:
-- missing secret → `missing_credential`
-- no secret on file → `no_verification_on_file`
-- mismatch → `credential_mismatch`
-A failed verification returns **403 + reason** and is written to the `dsar_log` (denied).
-**Never release or delete personal data on an unverified request.**
+Authentication failures are retained in managed request/security logs.
+Authorized and subject-mismatch DSAR actions are recorded in `audit_events`;
+fulfilled export/erase outcomes are recorded in `dsar_log`.
 
-## 2. Fulfill
-- **Access/export:** `GET /subjects/:id/export` → assembles subject + consent + readings + disclosures.
-- **Correction:** `PUT /subjects/:id` → minimized fields updated (P5.2).
-- **Erasure:** `DELETE /subjects/:id` → hard-deletes subject + consent + readings; verify with
-  `isFullyErased`; backups age out per retention (see `runbooks/customer-data-deletion.md`).
+## Fulfillment
 
-## 3. Log & account
-Every request (fulfilled or denied) is recorded in `dsar_log` with outcome + reason. Disclosures
-are accounted in `compliance/disclosure-log.md` and per-subject via `GET /subjects/:id/disclosures`.
+- **Access/export:** `GET /subjects/:id/export` returns subject, consent,
+  readings, and disclosures for the authenticated subject.
+- **Correction:** `PUT /subjects/:id` permits only minimized declared fields.
+- **Erasure:** `DELETE /subjects/:id` removes subject, consent, readings, and
+  disclosures after recent reauthentication. Backups age out under the
+  retention/deletion policy.
 
-## SLA
-Acknowledge within **5 business days**; complete within **30 days** (or the applicable statutory
-deadline). Denials state the reason and how to re-verify. Escalation: the owner.
+Do not record a fulfilled outcome until the operation succeeds. A partial or
+failed operation is an incident/deficiency to investigate and retry safely.
 
-## Related
-`policies/privacy.md`, `policies/data-retention.md`, `runbooks/customer-data-deletion.md`,
-`app/src/privacy.ts`, `app/src/server.ts`.
+## SLA and escalation
+
+Acknowledge within 5 business days and complete within 30 days or the applicable
+statutory deadline. The sole founder owns escalation, denial rationale, legal
+exceptions, and communication. Link the request to its log/audit evidence
+without copying exported personal data into GitHub.
