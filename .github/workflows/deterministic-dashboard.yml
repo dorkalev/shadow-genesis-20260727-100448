@@ -21,7 +21,7 @@ jobs:
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
       - name: Authenticate the read-only verifier to Google Cloud
         if: ${{ vars.GCP_VERIFY_SA != '' }}
-        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_VERIFY_SA }}
@@ -47,7 +47,7 @@ jobs:
           .shadow/site/target/release/shadow import-verify --db shadow/shadow.db --report shadow/readiness-latest.json
           .shadow/site/target/release/shadow render --db shadow/shadow.db --out dist
       - name: Upload dashboard and verification evidence
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: shadow-dashboard-${{ github.run_id }}
           path: |
